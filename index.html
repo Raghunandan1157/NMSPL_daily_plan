@@ -6,7 +6,6 @@
     <title>NMSPL - Daily Plan</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f0f2f8;
@@ -14,49 +13,120 @@
             min-height: 100vh;
         }
 
-        .layout { display: flex; min-height: 100vh; }
+        /* ===== LOGIN SCREEN ===== */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-screen.hidden { display: none; }
+        .login-logo {
+            font-size: 36px;
+            font-weight: 800;
+            color: #4a5fc1;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+        .login-sub {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 48px;
+        }
+        .login-cards {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .login-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 36px;
+            width: 220px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(74,95,193,0.1);
+            cursor: pointer;
+            transition: all 0.25s;
+            border: 2px solid transparent;
+        }
+        .login-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(74,95,193,0.18);
+            border-color: #4a5fc1;
+        }
+        .login-card .lc-icon {
+            width: 64px; height: 64px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+        .login-card .lc-icon.entry { background: #eef1ff; color: #4a5fc1; }
+        .login-card .lc-icon.monitor { background: #e8f9ef; color: #34c77b; }
+        .login-card .lc-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .login-card .lc-desc {
+            font-size: 13px;
+            color: #999;
+            line-height: 1.4;
+        }
 
-        /* --- Sidebar --- */
+        /* ===== APP LAYOUT ===== */
+        .app { display: none; min-height: 100vh; }
+        .app.active { display: flex; }
+        .layout { display: flex; min-height: 100vh; width: 100%; }
+
+        /* ===== SIDEBAR ===== */
         .sidebar {
-            width: 240px;
+            width: 250px;
             background: #fff;
             border-right: 1px solid #e8eaf0;
             position: fixed;
-            top: 0; left: 0;
-            height: 100vh;
+            top: 0; left: 0; height: 100vh;
             overflow-y: auto;
             z-index: 100;
             transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-
         .sidebar-header {
             padding: 20px 24px;
             border-bottom: 1px solid #e8eaf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-
-        .sidebar-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #4a5fc1;
+        .sidebar-header .sh-left {}
+        .sidebar-title { font-size: 20px; font-weight: 700; color: #4a5fc1; }
+        .sidebar-subtitle { font-size: 11px; color: #999; margin-top: 2px; }
+        .back-btn {
+            background: #f0f2f8;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: 0.2s;
         }
-
-        .sidebar-subtitle {
-            font-size: 12px;
-            color: #999;
-            margin-top: 2px;
-        }
-
+        .back-btn:hover { background: #e8eaf0; }
         .sidebar-section-label {
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 11px; font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #aaa;
             padding: 18px 24px 8px;
         }
-
-        .sidebar-nav { list-style: none; }
-
+        .sidebar-nav { list-style: none; flex: 1; }
         .sidebar-nav li {
             padding: 14px 24px;
             cursor: pointer;
@@ -68,35 +138,30 @@
             transition: all 0.2s;
             border-left: 3px solid transparent;
         }
-
         .sidebar-nav li:hover { background: #f5f7ff; color: #4a5fc1; }
-
         .sidebar-nav li.active {
             background: #f0f3ff;
             color: #4a5fc1;
             font-weight: 600;
             border-left-color: #4a5fc1;
         }
-
         .sidebar-nav li .dot {
             width: 8px; height: 8px;
             border-radius: 50%;
             background: #ccc;
             flex-shrink: 0;
         }
-
         .sidebar-nav li.active .dot { background: #4a5fc1; }
         .sidebar-nav li:hover .dot { background: #4a5fc1; }
-
         .sidebar-nav li .status-icon {
             margin-left: auto;
             font-size: 14px;
         }
-
         .sidebar-nav li .status-icon.done { color: #34c77b; }
-        .sidebar-nav li .status-icon.pending { color: #ccc; }
+        .sidebar-nav li .status-icon.half { color: #f5a623; }
+        .sidebar-nav li .status-icon.pending { color: #ddd; }
 
-        /* --- Mobile Header --- */
+        /* ===== MOBILE HEADER ===== */
         .mobile-header {
             display: none;
             position: fixed;
@@ -109,13 +174,7 @@
             padding: 0 16px;
             justify-content: space-between;
         }
-
-        .mobile-header .mob-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #4a5fc1;
-        }
-
+        .mobile-header .mob-title { font-size: 18px; font-weight: 700; color: #4a5fc1; }
         .hamburger {
             width: 36px; height: 36px;
             display: flex; flex-direction: column;
@@ -123,28 +182,17 @@
             gap: 5px; cursor: pointer;
             border: none; background: none;
         }
-
-        .hamburger span {
-            display: block; width: 22px; height: 2px;
-            background: #333; border-radius: 2px;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 99;
-        }
-
+        .hamburger span { display: block; width: 22px; height: 2px; background: #333; border-radius: 2px; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 99; }
         .overlay.show { display: block; }
 
-        /* --- Main Content --- */
+        /* ===== MAIN ===== */
         .main {
-            margin-left: 240px;
+            margin-left: 250px;
             flex: 1;
             padding: 32px 40px;
+            min-height: 100vh;
         }
-
         .page-header {
             font-size: 22px;
             font-weight: 700;
@@ -153,30 +201,35 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
-
-        .page-header .bank-tag {
-            font-size: 12px;
-            font-weight: 700;
+        .bank-tag {
+            font-size: 12px; font-weight: 700;
             padding: 4px 14px;
             border-radius: 20px;
             background: #eef1ff;
             color: #4a5fc1;
         }
+        .mode-tag {
+            font-size: 11px; font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .mode-tag.plan { background: #fff3e0; color: #e88a3a; }
+        .mode-tag.achievement { background: #e8f9ef; color: #34c77b; }
+        .mode-tag.analytics { background: #f0e8ff; color: #7c4dff; }
 
-        /* --- Cards --- */
+        /* ===== CARDS ===== */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
         .card {
             background: #fff;
             border-radius: 16px;
             padding: 28px 32px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 12px rgba(74, 95, 193, 0.07);
-            max-width: 640px;
+            box-shadow: 0 2px 12px rgba(74,95,193,0.07);
+            max-width: 700px;
         }
-
         .card-badge {
             display: inline-block;
             background: #eef1ff;
@@ -188,43 +241,79 @@
             margin-bottom: 20px;
             letter-spacing: 0.5px;
         }
-
-        .field-group { margin-bottom: 18px; }
-        .field-group:last-child { margin-bottom: 0; }
-
-        .field-label {
-            font-size: 15px;
-            color: #555;
-            margin-bottom: 8px;
-            font-weight: 500;
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
         }
-
+        .field-group { margin-bottom: 0; }
+        .field-label { font-size: 14px; color: #555; margin-bottom: 6px; font-weight: 500; }
         .field-input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 14px;
             border: 1.5px solid #dde0ea;
-            border-radius: 12px;
-            font-size: 15px;
+            border-radius: 10px;
+            font-size: 14px;
             color: #333;
             background: #fafbff;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-
         .field-input:focus {
             border-color: #4a5fc1;
-            box-shadow: 0 0 0 3px rgba(74, 95, 193, 0.12);
+            box-shadow: 0 0 0 3px rgba(74,95,193,0.12);
+        }
+        .field-input:disabled {
+            background: #f0f1f5;
+            color: #999;
+        }
+        .field-input.achieved {
+            border-color: #34c77b;
+            background: #f0fdf4;
         }
 
-        /* --- Save & Next Button --- */
+        /* Analytics in card */
+        .analytics-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f1f5;
+        }
+        .analytics-item { text-align: center; }
+        .analytics-item .ai-label { font-size: 11px; color: #999; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .analytics-item .ai-value { font-size: 18px; font-weight: 700; }
+        .analytics-item .ai-value.plan-v { color: #e88a3a; }
+        .analytics-item .ai-value.ach-v { color: #34c77b; }
+        .analytics-item .ai-value.pct-v { color: #4a5fc1; }
+
+        /* Progress bar */
+        .progress-bar {
+            height: 8px;
+            background: #f0f1f5;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .fill.green { background: #34c77b; }
+        .fill.yellow { background: #f5a623; }
+        .fill.red { background: #e74c5e; }
+
+        /* ===== ACTION BAR ===== */
         .action-bar {
-            max-width: 640px;
+            max-width: 700px;
             display: flex;
             gap: 12px;
             margin-top: 32px;
             flex-wrap: wrap;
         }
-
         .btn {
             padding: 14px 28px;
             border: none;
@@ -237,667 +326,809 @@
             align-items: center;
             gap: 8px;
         }
-
-        .btn-primary {
-            background: #4a5fc1;
-            color: #fff;
-        }
-
+        .btn-primary { background: #4a5fc1; color: #fff; }
         .btn-primary:hover { background: #3a4da8; }
-
-        .btn-outline {
-            background: #fff;
-            color: #4a5fc1;
-            border: 1.5px solid #dde0ea;
-        }
-
+        .btn-success { background: #34c77b; color: #fff; }
+        .btn-success:hover { background: #2ab36a; }
+        .btn-purple { background: #7c4dff; color: #fff; }
+        .btn-purple:hover { background: #6a3de8; }
+        .btn-outline { background: #fff; color: #4a5fc1; border: 1.5px solid #dde0ea; }
         .btn-outline:hover { border-color: #4a5fc1; }
+        .arrow { font-size: 18px; }
 
-        .btn .arrow { font-size: 18px; }
-
-        /* --- Completion Screen --- */
-        .completion-screen {
-            display: none;
-            text-align: center;
-            padding: 60px 20px;
-            max-width: 500px;
-        }
-
+        /* ===== COMPLETION ===== */
+        .completion-screen { display: none; text-align: center; padding: 60px 20px; max-width: 500px; }
         .completion-screen.active { display: block; }
-
         .completion-icon {
-            width: 80px; height: 80px;
-            border-radius: 50%;
-            background: #e8f9ef;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            margin-bottom: 24px;
+            width: 80px; height: 80px; border-radius: 50%;
+            background: #e8f9ef; display: inline-flex;
+            align-items: center; justify-content: center;
+            font-size: 40px; margin-bottom: 24px; color: #34c77b;
         }
-
-        .completion-screen h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .completion-screen p {
-            font-size: 15px;
-            color: #888;
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-
+        .completion-screen h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .completion-screen p { font-size: 15px; color: #888; margin-bottom: 24px; line-height: 1.5; }
         .achievement-box {
-            background: #fff;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 2px 12px rgba(74, 95, 193, 0.07);
-            margin-bottom: 20px;
+            background: #fff; border-radius: 16px; padding: 24px;
+            box-shadow: 0 2px 12px rgba(74,95,193,0.07); margin-bottom: 20px;
         }
-
-        .achievement-box .deadline {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 8px;
-        }
-
-        .achievement-box .time-status {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
+        .achievement-box .deadline { font-size: 13px; color: #888; margin-bottom: 8px; }
+        .achievement-box .time-status { font-size: 20px; font-weight: 700; }
         .achievement-box .time-status.on-time { color: #34c77b; }
         .achievement-box .time-status.late { color: #e74c5e; }
 
-        .summary-cards {
+        /* ===== MONITOR: DASHBOARD ===== */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
         }
-
-        .summary-card {
+        .stat-card {
             background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(74,95,193,0.06);
+        }
+        .stat-card .sc-label { font-size: 12px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .stat-card .sc-value { font-size: 26px; font-weight: 800; color: #333; }
+        .stat-card .sc-sub { font-size: 12px; color: #999; margin-top: 4px; }
+
+        /* Chart container */
+        .chart-section { margin-bottom: 32px; }
+        .chart-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #333; }
+        .chart-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(74,95,193,0.07);
+        }
+        /* Bar chart */
+        .bar-chart { display: flex; align-items: flex-end; gap: 16px; height: 200px; padding-top: 20px; }
+        .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+        .bar-pair { display: flex; gap: 4px; align-items: flex-end; width: 100%; justify-content: center; }
+        .bar {
+            width: 28px;
+            border-radius: 6px 6px 0 0;
+            transition: height 0.6s ease;
+            min-height: 4px;
+        }
+        .bar.plan-bar { background: #e88a3a; }
+        .bar.ach-bar { background: #34c77b; }
+        .bar-label { font-size: 11px; color: #888; font-weight: 600; text-align: center; margin-top: 8px; }
+        .chart-legend {
+            display: flex; gap: 20px; margin-top: 16px; justify-content: center;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #666; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+        /* Donut / Percentage circles */
+        .donut-row {
+            display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+        }
+        .donut-item { text-align: center; }
+        .donut-item .di-label { font-size: 12px; color: #888; font-weight: 600; margin-top: 8px; }
+        .donut-circle {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: #333;
+        }
+
+        /* ===== MONITOR: REPORTS TABLE ===== */
+        .report-table-wrap {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(74,95,193,0.07);
+            overflow: hidden;
+        }
+        .report-table-scroll { overflow-x: auto; }
+        table.report-table {
+            width: 100%; border-collapse: collapse; min-width: 600px;
+        }
+        table.report-table thead { background: #f8f9fd; }
+        table.report-table th {
+            padding: 14px 16px; text-align: left;
+            font-size: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #999; border-bottom: 1px solid #e8eaf0;
+        }
+        table.report-table td {
+            padding: 14px 16px; font-size: 14px;
+            border-bottom: 1px solid #f2f3f7;
+        }
+        table.report-table tr:last-child td { border-bottom: none; }
+        table.report-table tr:hover td { background: #fafbff; }
+        .pct-badge {
+            display: inline-block;
+            padding: 3px 10px;
             border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(74, 95, 193, 0.06);
-        }
-
-        .summary-card .sc-label {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
-            text-transform: uppercase;
-            color: #aaa;
-            margin-bottom: 4px;
         }
+        .pct-badge.high { background: #e8f9ef; color: #34c77b; }
+        .pct-badge.mid { background: #fff3e0; color: #e88a3a; }
+        .pct-badge.low { background: #ffeef0; color: #e74c5e; }
+        .no-data-msg { text-align: center; padding: 40px; color: #999; font-size: 15px; }
 
-        .summary-card .sc-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #4a5fc1;
-        }
-
-        /* --- Toast --- */
+        /* ===== TOAST ===== */
         .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #34c77b;
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 200;
-            transform: translateY(80px);
-            opacity: 0;
+            position: fixed; bottom: 24px; right: 24px;
+            background: #34c77b; color: #fff;
+            padding: 14px 24px; border-radius: 12px;
+            font-size: 14px; font-weight: 600; z-index: 200;
+            transform: translateY(80px); opacity: 0;
             transition: all 0.3s ease;
         }
-
         .toast.show { transform: translateY(0); opacity: 1; }
 
-        /* --- Responsive --- */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .mobile-header { display: flex; }
-
-            .main {
-                margin-left: 0;
-                padding: 72px 16px 20px;
-            }
-
+            .main { margin-left: 0; padding: 72px 16px 20px; }
             .card { padding: 20px; }
-
+            .field-row { grid-template-columns: 1fr; gap: 12px; }
+            .analytics-row { grid-template-columns: 1fr; gap: 8px; }
             .action-bar { flex-direction: column; }
             .action-bar .btn { width: 100%; justify-content: center; }
-
-            .summary-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .toast {
-                left: 16px; right: 16px;
-                bottom: 16px;
-                text-align: center;
-            }
+            .login-cards { flex-direction: column; align-items: center; }
+            .login-card { width: 260px; padding: 32px 28px; }
+            .dashboard-grid { grid-template-columns: 1fr 1fr; }
+            .bar-chart { height: 160px; }
+            .bar { width: 20px; }
+            .toast { left: 16px; right: 16px; bottom: 16px; text-align: center; }
+        }
+        @media (max-width: 400px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-logo">NMSPL</div>
+    <div class="login-sub">Daily Collection Plan</div>
+    <div class="login-cards">
+        <div class="login-card" onclick="enterApp('entry')">
+            <div class="lc-icon entry">&#9998;</div>
+            <div class="lc-title">Data Entry</div>
+            <div class="lc-desc">Enter daily plan &amp; achievement for each bank</div>
+        </div>
+        <div class="login-card" onclick="enterApp('monitor')">
+            <div class="lc-icon monitor">&#9776;</div>
+            <div class="lc-title">Monitor</div>
+            <div class="lc-desc">View reports, charts &amp; analytics</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== DATA ENTRY APP ==================== -->
+<div class="app" id="entryApp">
     <header class="mobile-header">
-        <button class="hamburger" id="menuBtn" aria-label="Menu">
+        <button class="hamburger" onclick="toggleSidebar('entry')" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
         <span class="mob-title">NMSPL</span>
-        <span id="mobDate" style="font-size:13px;color:#999"></span>
+        <span id="mobDateEntry" style="font-size:13px;color:#999"></span>
     </header>
-
-    <div class="overlay" id="overlay"></div>
+    <div class="overlay" id="overlayEntry" onclick="closeSidebar('entry')"></div>
 
     <div class="layout">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar" id="sidebarEntry">
             <div class="sidebar-header">
-                <div class="sidebar-title">NMSPL</div>
-                <div class="sidebar-subtitle">Daily Collection Plan</div>
+                <div class="sh-left">
+                    <div class="sidebar-title">NMSPL</div>
+                    <div class="sidebar-subtitle">Data Entry</div>
+                </div>
+                <button class="back-btn" onclick="goHome()">Home</button>
             </div>
-
             <div class="sidebar-section-label">Banks</div>
-            <ul class="sidebar-nav" id="sidebarNav">
-                <li class="active" data-target="sbi" onclick="switchTab('sbi')">
+            <ul class="sidebar-nav" id="entryNav">
+                <li class="active" data-target="sbi" onclick="switchEntryTab('sbi')">
                     <span class="dot"></span>SBI
-                    <span class="status-icon pending" id="status-sbi">&#9675;</span>
+                    <span class="status-icon pending" id="estatus-sbi">&#9675;</span>
                 </li>
-                <li data-target="csb" onclick="switchTab('csb')">
+                <li data-target="csb" onclick="switchEntryTab('csb')">
                     <span class="dot"></span>CSB
-                    <span class="status-icon pending" id="status-csb">&#9675;</span>
+                    <span class="status-icon pending" id="estatus-csb">&#9675;</span>
                 </li>
-                <li data-target="own" onclick="switchTab('own')">
+                <li data-target="own" onclick="switchEntryTab('own')">
                     <span class="dot"></span>OWN
-                    <span class="status-icon pending" id="status-own">&#9675;</span>
+                    <span class="status-icon pending" id="estatus-own">&#9675;</span>
                 </li>
             </ul>
         </aside>
 
-        <!-- Main Content -->
-        <main class="main" id="mainContent">
-            <!-- SBI Tab -->
-            <div class="tab-content active" id="tab-sbi">
-                <div class="page-header">
-                    Portfolio Overview <span class="bank-tag">SBI</span>
-                </div>
+        <main class="main" id="entryMain"></main>
+    </div>
+</div>
 
-                <div class="card">
-                    <span class="card-badge">REGULAR</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="regular" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="regular" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
+<!-- ==================== MONITOR APP ==================== -->
+<div class="app" id="monitorApp">
+    <header class="mobile-header">
+        <button class="hamburger" onclick="toggleSidebar('monitor')" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <span class="mob-title">NMSPL</span>
+        <span style="font-size:13px;color:#999">Monitor</span>
+    </header>
+    <div class="overlay" id="overlayMonitor" onclick="closeSidebar('monitor')"></div>
 
-                <div class="card">
-                    <span class="card-badge">1-30 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="1-30-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="1-30-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebarMonitor">
+            <div class="sidebar-header">
+                <div class="sh-left">
+                    <div class="sidebar-title">NMSPL</div>
+                    <div class="sidebar-subtitle">Monitor</div>
                 </div>
+                <button class="back-btn" onclick="goHome()">Home</button>
+            </div>
+            <div class="sidebar-section-label">Views</div>
+            <ul class="sidebar-nav" id="monitorNav">
+                <li class="active" data-target="dashboard" onclick="switchMonitorTab('dashboard')">
+                    <span class="dot"></span>Dashboard
+                </li>
+                <li data-target="reports" onclick="switchMonitorTab('reports')">
+                    <span class="dot"></span>Reports
+                </li>
+            </ul>
+        </aside>
 
-                <div class="card">
-                    <span class="card-badge">31-60 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="31-60-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="31-60-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
+        <main class="main" id="monitorMain">
+            <!-- Dashboard -->
+            <div class="tab-content active" id="mtab-dashboard">
+                <div class="page-header">Dashboard</div>
+                <div class="dashboard-grid" id="dashStats"></div>
 
-                <div class="card">
-                    <span class="card-badge">61-90 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="61-90-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="61-90-dpd" data-field="amount" placeholder="Enter amount">
+                <div class="chart-section">
+                    <div class="chart-title">Plan vs Achievement by Bank</div>
+                    <div class="chart-card">
+                        <div class="bar-chart" id="bankBarChart"></div>
+                        <div class="chart-legend">
+                            <div class="legend-item"><div class="legend-dot" style="background:#e88a3a"></div>Plan</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#34c77b"></div>Achievement</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <span class="card-badge">NPA</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="npa" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="sbi" data-cat="npa" data-field="amount" placeholder="Enter amount">
+                <div class="chart-section">
+                    <div class="chart-title">Achievement % by Category</div>
+                    <div class="chart-card">
+                        <div class="bar-chart" id="catBarChart"></div>
+                        <div class="chart-legend">
+                            <div class="legend-item"><div class="legend-dot" style="background:#e88a3a"></div>Plan</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#34c77b"></div>Achievement</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="action-bar">
-                    <button class="btn btn-primary" onclick="saveAndNext('sbi')">
-                        Save & Next <span class="arrow">&#8594;</span> CSB
-                    </button>
+                <div class="chart-section">
+                    <div class="chart-title">Bank-wise Achievement Rate</div>
+                    <div class="chart-card">
+                        <div class="donut-row" id="donutRow"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- CSB Tab -->
-            <div class="tab-content" id="tab-csb">
-                <div class="page-header">
-                    Portfolio Overview <span class="bank-tag">CSB</span>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">REGULAR</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="regular" data-field="account" placeholder="Enter account">
+            <!-- Reports -->
+            <div class="tab-content" id="mtab-reports">
+                <div class="page-header">Reports</div>
+                <div class="report-table-wrap">
+                    <div class="report-table-scroll">
+                        <table class="report-table" id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>Bank</th>
+                                    <th>Category</th>
+                                    <th>Plan Account</th>
+                                    <th>Plan Amount</th>
+                                    <th>Ach. Account</th>
+                                    <th>Ach. Amount</th>
+                                    <th>Achievement %</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportBody"></tbody>
+                        </table>
                     </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="regular" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">1-30 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="1-30-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="1-30-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">31-60 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="31-60-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="31-60-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">61-90 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="61-90-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="61-90-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">NPA</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="npa" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="csb" data-cat="npa" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="action-bar">
-                    <button class="btn btn-outline" onclick="switchTab('sbi')">
-                        <span class="arrow">&#8592;</span> Back to SBI
-                    </button>
-                    <button class="btn btn-primary" onclick="saveAndNext('csb')">
-                        Save & Next <span class="arrow">&#8594;</span> OWN
-                    </button>
-                </div>
-            </div>
-
-            <!-- OWN Tab -->
-            <div class="tab-content" id="tab-own">
-                <div class="page-header">
-                    Portfolio Overview <span class="bank-tag">OWN</span>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">REGULAR</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="regular" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="regular" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">1-30 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="1-30-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="1-30-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">31-60 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="31-60-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="31-60-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">61-90 DPD</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="61-90-dpd" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="61-90-dpd" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-badge">NPA</span>
-                    <div class="field-group">
-                        <div class="field-label">Account</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="npa" data-field="account" placeholder="Enter account">
-                    </div>
-                    <div class="field-group">
-                        <div class="field-label">Amount</div>
-                        <input type="text" class="field-input" data-bank="own" data-cat="npa" data-field="amount" placeholder="Enter amount">
-                    </div>
-                </div>
-
-                <div class="action-bar">
-                    <button class="btn btn-outline" onclick="switchTab('csb')">
-                        <span class="arrow">&#8592;</span> Back to CSB
-                    </button>
-                    <button class="btn btn-primary" onclick="saveAndFinish()">
-                        Save & Complete &#10003;
-                    </button>
-                </div>
-            </div>
-
-            <!-- Completion Screen -->
-            <div class="completion-screen" id="completionScreen">
-                <div class="completion-icon">&#10003;</div>
-                <h2>All Done!</h2>
-                <p>Daily plan for all banks has been saved successfully.</p>
-
-                <div class="achievement-box">
-                    <div class="deadline">Achievement Deadline: 6:00 PM</div>
-                    <div class="time-status" id="timeStatus"></div>
-                    <div id="timeDetail" style="font-size:13px;color:#888;margin-top:4px"></div>
-                </div>
-
-                <div class="summary-cards" id="summaryCards"></div>
-
-                <div class="action-bar" style="justify-content:center;max-width:100%;margin-top:24px">
-                    <button class="btn btn-outline" onclick="editAgain()">Edit Entries</button>
                 </div>
             </div>
         </main>
     </div>
+</div>
 
-    <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-    <script>
-        const BANKS = ['sbi', 'csb', 'own'];
-        const BANK_LABELS = { sbi: 'SBI', csb: 'CSB', own: 'OWN' };
-        const CATEGORIES = ['regular', '1-30-dpd', '31-60-dpd', '61-90-dpd', 'npa'];
-        const DEADLINE_HOUR = 18; // 6 PM
+<script>
+const BANKS = ['sbi', 'csb', 'own'];
+const BANK_LABELS = { sbi: 'SBI', csb: 'CSB', own: 'OWN' };
+const CATEGORIES = ['regular', '1-30-dpd', '31-60-dpd', '61-90-dpd', 'npa'];
+const CAT_LABELS = { 'regular': 'Regular', '1-30-dpd': '1-30 DPD', '31-60-dpd': '31-60 DPD', '61-90-dpd': '61-90 DPD', 'npa': 'NPA' };
+const DEADLINE_HOUR = 18;
 
-        let savedBanks = new Set();
+// ── Storage ──
+function storageKey() {
+    return 'nmspl_' + new Date().toISOString().split('T')[0];
+}
+function loadAll() {
+    return JSON.parse(localStorage.getItem(storageKey()) || '{}');
+}
+function saveAll(d) {
+    localStorage.setItem(storageKey(), JSON.stringify(d));
+}
 
-        // --- Init ---
-        function init() {
-            loadData();
-            document.getElementById('menuBtn').addEventListener('click', toggleSidebar);
-            document.getElementById('overlay').addEventListener('click', toggleSidebar);
+// ── Navigation ──
+function enterApp(mode) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    if (mode === 'entry') {
+        document.getElementById('entryApp').classList.add('active');
+        document.getElementById('monitorApp').classList.remove('active');
+        buildEntryTabs();
+        switchEntryTab('sbi');
+        updateAllStatuses();
+    } else {
+        document.getElementById('monitorApp').classList.add('active');
+        document.getElementById('entryApp').classList.remove('active');
+        renderDashboard();
+        renderReports();
+        switchMonitorTab('dashboard');
+    }
+    setMobDate();
+}
+function goHome() {
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('entryApp').classList.remove('active');
+    document.getElementById('monitorApp').classList.remove('active');
+    closeSidebar('entry');
+    closeSidebar('monitor');
+}
+function setMobDate() {
+    const d = new Date();
+    const s = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+    const el = document.getElementById('mobDateEntry');
+    if (el) el.textContent = s;
+}
 
-            const today = new Date();
-            document.getElementById('mobDate').textContent =
-                today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
-        }
+// ── Sidebar toggle ──
+function toggleSidebar(app) {
+    const id = app === 'entry' ? 'sidebarEntry' : 'sidebarMonitor';
+    const oid = app === 'entry' ? 'overlayEntry' : 'overlayMonitor';
+    document.getElementById(id).classList.toggle('open');
+    document.getElementById(oid).classList.toggle('show');
+}
+function closeSidebar(app) {
+    const id = app === 'entry' ? 'sidebarEntry' : 'sidebarMonitor';
+    const oid = app === 'entry' ? 'overlayEntry' : 'overlayMonitor';
+    document.getElementById(id).classList.remove('open');
+    document.getElementById(oid).classList.remove('show');
+}
 
-        // --- Data persistence ---
-        function getStorageKey() {
-            const today = new Date().toISOString().split('T')[0];
-            return 'nmspl_' + today;
-        }
+// ════════════════════════════════════════
+// DATA ENTRY
+// ════════════════════════════════════════
 
-        function saveBank(bank) {
-            const inputs = document.querySelectorAll(`[data-bank="${bank}"]`);
-            const bankData = {};
-            inputs.forEach(inp => {
-                const cat = inp.dataset.cat;
-                const field = inp.dataset.field;
-                if (!bankData[cat]) bankData[cat] = {};
-                bankData[cat][field] = inp.value;
-            });
+function getPhase(bank) {
+    const d = loadAll();
+    const bd = d[bank];
+    if (!bd) return 'plan';
+    if (bd._planSaved && bd._achSaved) return 'analytics';
+    if (bd._planSaved) return 'achievement';
+    return 'plan';
+}
 
-            const key = getStorageKey();
-            const allData = JSON.parse(localStorage.getItem(key) || '{}');
-            allData[bank] = bankData;
-            allData._savedBanks = Array.from(savedBanks);
-            allData._completedAt = allData._completedAt || null;
-            localStorage.setItem(key, JSON.stringify(allData));
-        }
+function buildEntryTabs() {
+    const main = document.getElementById('entryMain');
+    let html = '';
 
-        function loadData() {
-            const key = getStorageKey();
-            const allData = JSON.parse(localStorage.getItem(key) || '{}');
+    BANKS.forEach((bank, bi) => {
+        const phase = getPhase(bank);
+        const d = loadAll();
+        const bd = d[bank] || {};
 
-            BANKS.forEach(bank => {
-                if (allData[bank]) {
-                    const bankData = allData[bank];
-                    Object.keys(bankData).forEach(cat => {
-                        Object.keys(bankData[cat]).forEach(field => {
-                            const inp = document.querySelector(
-                                `[data-bank="${bank}"][data-cat="${cat}"][data-field="${field}"]`
-                            );
-                            if (inp) inp.value = bankData[cat][field];
-                        });
-                    });
-                }
-            });
+        html += `<div class="tab-content" id="etab-${bank}">`;
+        html += `<div class="page-header">Portfolio Overview <span class="bank-tag">${BANK_LABELS[bank]}</span> `;
+        html += getPhaseTag(phase);
+        html += `</div>`;
 
-            if (allData._savedBanks) {
-                savedBanks = new Set(allData._savedBanks);
-                savedBanks.forEach(b => updateSidebarStatus(b, true));
-            }
+        CATEGORIES.forEach(cat => {
+            const plan = (bd[cat] || {});
+            html += `<div class="card" id="card-${bank}-${cat}">`;
+            html += `<span class="card-badge">${CAT_LABELS[cat]}</span>`;
 
-            if (allData._completedAt && savedBanks.size === 3) {
-                showCompletion(allData._completedAt);
-            }
-        }
-
-        // --- Tab switching ---
-        function switchTab(bank) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + bank).classList.add('active');
-            document.getElementById('completionScreen').classList.remove('active');
-
-            document.querySelectorAll('#sidebarNav li').forEach(li => {
-                li.classList.toggle('active', li.dataset.target === bank);
-            });
-
-            // Close mobile sidebar
-            closeSidebar();
-
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // --- Save & Next ---
-        function saveAndNext(currentBank) {
-            saveBank(currentBank);
-            savedBanks.add(currentBank);
-            updateSidebarStatus(currentBank, true);
-
-            const currentIdx = BANKS.indexOf(currentBank);
-            const nextBank = BANKS[currentIdx + 1];
-
-            showToast(BANK_LABELS[currentBank] + ' saved');
-
-            if (nextBank) {
-                setTimeout(() => switchTab(nextBank), 400);
-            }
-        }
-
-        function saveAndFinish() {
-            saveBank('own');
-            savedBanks.add('own');
-            updateSidebarStatus('own', true);
-
-            const key = getStorageKey();
-            const allData = JSON.parse(localStorage.getItem(key) || '{}');
-            const now = new Date().toISOString();
-            allData._completedAt = now;
-            allData._savedBanks = Array.from(savedBanks);
-            localStorage.setItem(key, JSON.stringify(allData));
-
-            showToast('All banks saved!');
-            setTimeout(() => showCompletion(now), 500);
-        }
-
-        // --- Completion ---
-        function showCompletion(completedAtISO) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            const screen = document.getElementById('completionScreen');
-            screen.classList.add('active');
-
-            // Time check
-            const completedAt = new Date(completedAtISO);
-            const deadline = new Date(completedAt);
-            deadline.setHours(DEADLINE_HOUR, 0, 0, 0);
-
-            const timeStr = completedAt.toLocaleTimeString('en-IN', {
-                hour: '2-digit', minute: '2-digit', hour12: true
-            });
-
-            const statusEl = document.getElementById('timeStatus');
-            const detailEl = document.getElementById('timeDetail');
-
-            if (completedAt <= deadline) {
-                statusEl.textContent = 'Completed on time at ' + timeStr;
-                statusEl.className = 'time-status on-time';
-                const diff = deadline - completedAt;
-                const mins = Math.floor(diff / 60000);
-                const hrs = Math.floor(mins / 60);
-                const remMins = mins % 60;
-                detailEl.textContent = hrs > 0
-                    ? hrs + 'h ' + remMins + 'm before deadline'
-                    : remMins + 'm before deadline';
+            if (phase === 'plan') {
+                html += fieldRow(bank, cat, 'plan', 'Account', 'account', plan.planAccount || '', false);
+                html += fieldRow(bank, cat, 'plan', 'Amount', 'amount', plan.planAmount || '', false);
+            } else if (phase === 'achievement') {
+                html += fieldRow(bank, cat, 'plan', 'Account (Plan)', 'account', plan.planAccount || '', true);
+                html += fieldRow(bank, cat, 'plan', 'Amount (Plan)', 'amount', plan.planAmount || '', true);
+                html += fieldRow(bank, cat, 'ach', 'Account (Achievement)', 'account', plan.achAccount || '', false);
+                html += fieldRow(bank, cat, 'ach', 'Amount (Achievement)', 'amount', plan.achAmount || '', false);
             } else {
-                statusEl.textContent = 'Completed late at ' + timeStr;
-                statusEl.className = 'time-status late';
-                const diff = completedAt - deadline;
-                const mins = Math.floor(diff / 60000);
-                const hrs = Math.floor(mins / 60);
-                const remMins = mins % 60;
-                detailEl.textContent = hrs > 0
-                    ? hrs + 'h ' + remMins + 'm after deadline'
-                    : remMins + 'm after deadline';
+                // Analytics
+                html += fieldRow(bank, cat, 'plan', 'Account (Plan)', 'account', plan.planAccount || '', true);
+                html += fieldRow(bank, cat, 'plan', 'Amount (Plan)', 'amount', plan.planAmount || '', true);
+                html += fieldRow(bank, cat, 'ach', 'Account (Achievement)', 'account', plan.achAccount || '', true);
+                html += fieldRow(bank, cat, 'ach', 'Amount (Achievement)', 'amount', plan.achAmount || '', true);
+
+                const planAmt = parseFloat((plan.planAmount || '0').replace(/,/g, '')) || 0;
+                const achAmt = parseFloat((plan.achAmount || '0').replace(/,/g, '')) || 0;
+                const pct = planAmt > 0 ? Math.round((achAmt / planAmt) * 100) : 0;
+                const barColor = pct >= 80 ? 'green' : pct >= 50 ? 'yellow' : 'red';
+
+                html += `<div class="analytics-row">
+                    <div class="analytics-item"><div class="ai-label">Plan</div><div class="ai-value plan-v">${formatNum(planAmt)}</div></div>
+                    <div class="analytics-item"><div class="ai-label">Achievement</div><div class="ai-value ach-v">${formatNum(achAmt)}</div></div>
+                    <div class="analytics-item"><div class="ai-label">Achievement %</div><div class="ai-value pct-v">${pct}%</div></div>
+                </div>
+                <div class="progress-bar"><div class="fill ${barColor}" style="width:${Math.min(pct, 100)}%"></div></div>`;
             }
 
-            // Summary
-            const key = getStorageKey();
-            const allData = JSON.parse(localStorage.getItem(key) || '{}');
-            const summaryEl = document.getElementById('summaryCards');
-            summaryEl.innerHTML = BANKS.map(bank => {
-                const bd = allData[bank] || {};
-                let totalAmt = 0;
-                let filledCats = 0;
-                CATEGORIES.forEach(cat => {
-                    if (bd[cat] && bd[cat].amount) {
-                        const v = parseFloat(bd[cat].amount.replace(/,/g, '')) || 0;
-                        totalAmt += v;
-                    }
-                    if (bd[cat] && bd[cat].account) filledCats++;
-                });
-                return `
-                    <div class="summary-card">
-                        <div class="sc-label">${BANK_LABELS[bank]}</div>
-                        <div class="sc-value">${filledCats} / ${CATEGORIES.length} filled</div>
-                    </div>
-                `;
-            }).join('');
+            html += `</div>`;
+        });
 
-            // Deactivate all sidebar items
-            document.querySelectorAll('#sidebarNav li').forEach(li => li.classList.remove('active'));
+        // Action bar
+        html += `<div class="action-bar" id="actions-${bank}">`;
+        html += buildActionButtons(bank, bi, phase);
+        html += `</div>`;
+
+        html += `</div>`;
+    });
+
+    // Completion screen
+    html += `<div class="completion-screen" id="completionScreen">
+        <div class="completion-icon">&#10003;</div>
+        <h2>All Done!</h2>
+        <p>Daily plan and achievements for all banks have been saved.</p>
+        <div class="achievement-box">
+            <div class="deadline">Achievement Deadline: 6:00 PM</div>
+            <div class="time-status" id="timeStatus"></div>
+            <div id="timeDetail" style="font-size:13px;color:#888;margin-top:4px"></div>
+        </div>
+        <div class="action-bar" style="justify-content:center;max-width:100%;margin-top:24px">
+            <button class="btn btn-outline" onclick="goHome()">Back to Home</button>
+            <button class="btn btn-primary" onclick="enterApp('monitor')">View Monitor</button>
+        </div>
+    </div>`;
+
+    main.innerHTML = html;
+}
+
+function fieldRow(bank, cat, type, label, field, value, disabled) {
+    const cls = (type === 'ach' && disabled) ? 'field-input achieved' : 'field-input';
+    const dis = disabled ? 'disabled' : '';
+    return `<div class="field-row"><div class="field-group">
+        <div class="field-label">${label}</div>
+        <input type="text" class="${cls}" data-bank="${bank}" data-cat="${cat}" data-type="${type}" data-field="${field}" placeholder="Enter ${field}" value="${esc(value)}" ${dis}>
+    </div></div>`;
+}
+
+function getPhaseTag(phase) {
+    if (phase === 'plan') return '<span class="mode-tag plan">Set Plan</span>';
+    if (phase === 'achievement') return '<span class="mode-tag achievement">Set Achievement</span>';
+    return '<span class="mode-tag analytics">Analytics</span>';
+}
+
+function buildActionButtons(bank, bi, phase) {
+    let html = '';
+    const nextBank = BANKS[bi + 1];
+    const prevBank = BANKS[bi - 1];
+
+    if (prevBank) {
+        html += `<button class="btn btn-outline" onclick="switchEntryTab('${prevBank}')"><span class="arrow">&#8592;</span> ${BANK_LABELS[prevBank]}</button>`;
+    }
+
+    if (phase === 'plan') {
+        if (nextBank) {
+            html += `<button class="btn btn-primary" onclick="savePlan('${bank}')">Set Plan & Next <span class="arrow">&#8594;</span> ${BANK_LABELS[nextBank]}</button>`;
+        } else {
+            html += `<button class="btn btn-primary" onclick="savePlan('${bank}')">Set Plan &#10003;</button>`;
         }
-
-        function editAgain() {
-            switchTab('sbi');
+    } else if (phase === 'achievement') {
+        if (nextBank && getPhase(nextBank) === 'achievement') {
+            html += `<button class="btn btn-success" onclick="saveAchievement('${bank}')">Set Achievement & Next <span class="arrow">&#8594;</span> ${BANK_LABELS[nextBank]}</button>`;
+        } else if (nextBank && getPhase(nextBank) === 'plan') {
+            html += `<button class="btn btn-success" onclick="saveAchievement('${bank}')">Set Achievement & Next <span class="arrow">&#8594;</span> ${BANK_LABELS[nextBank]}</button>`;
+        } else {
+            html += `<button class="btn btn-success" onclick="saveAchievement('${bank}')">Set Achievement &#10003;</button>`;
         }
-
-        // --- Sidebar status ---
-        function updateSidebarStatus(bank, done) {
-            const el = document.getElementById('status-' + bank);
-            if (done) {
-                el.innerHTML = '&#10003;';
-                el.className = 'status-icon done';
-            } else {
-                el.innerHTML = '&#9675;';
-                el.className = 'status-icon pending';
-            }
+    } else {
+        if (nextBank) {
+            html += `<button class="btn btn-purple" onclick="switchEntryTab('${nextBank}')">Next <span class="arrow">&#8594;</span> ${BANK_LABELS[nextBank]}</button>`;
         }
+    }
 
-        // --- Mobile sidebar ---
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('show');
+    return html;
+}
+
+function savePlan(bank) {
+    const d = loadAll();
+    if (!d[bank]) d[bank] = {};
+
+    const inputs = document.querySelectorAll(`[data-bank="${bank}"][data-type="plan"]`);
+    inputs.forEach(inp => {
+        const cat = inp.dataset.cat;
+        const field = inp.dataset.field;
+        if (!d[bank][cat]) d[bank][cat] = {};
+        d[bank][cat]['plan' + capitalize(field)] = inp.value;
+    });
+
+    d[bank]._planSaved = true;
+    saveAll(d);
+    updateAllStatuses();
+    showToast(BANK_LABELS[bank] + ' plan saved');
+
+    const bi = BANKS.indexOf(bank);
+    const nextBank = BANKS[bi + 1];
+
+    // Check if all plans are set
+    const allPlansSet = BANKS.every(b => {
+        const bd = loadAll()[b];
+        return bd && bd._planSaved;
+    });
+
+    buildEntryTabs();
+
+    if (nextBank && !loadAll()[nextBank]?._planSaved) {
+        setTimeout(() => switchEntryTab(nextBank), 300);
+    } else if (allPlansSet) {
+        // All plans set, go to first bank for achievement
+        setTimeout(() => switchEntryTab('sbi'), 300);
+    }
+}
+
+function saveAchievement(bank) {
+    const d = loadAll();
+    if (!d[bank]) d[bank] = {};
+
+    const inputs = document.querySelectorAll(`[data-bank="${bank}"][data-type="ach"]`);
+    inputs.forEach(inp => {
+        const cat = inp.dataset.cat;
+        const field = inp.dataset.field;
+        if (!d[bank][cat]) d[bank][cat] = {};
+        d[bank][cat]['ach' + capitalize(field)] = inp.value;
+    });
+
+    d[bank]._achSaved = true;
+
+    // Check completion
+    const allDone = BANKS.every(b => {
+        if (b === bank) return true;
+        const bd = d[b];
+        return bd && bd._planSaved && bd._achSaved;
+    });
+
+    if (allDone && !d._completedAt) {
+        d._completedAt = new Date().toISOString();
+    }
+
+    saveAll(d);
+    updateAllStatuses();
+    showToast(BANK_LABELS[bank] + ' achievement saved');
+
+    buildEntryTabs();
+
+    if (allDone) {
+        setTimeout(() => showCompletionScreen(), 400);
+    } else {
+        const bi = BANKS.indexOf(bank);
+        const nextBank = BANKS[bi + 1];
+        if (nextBank) {
+            setTimeout(() => switchEntryTab(nextBank), 300);
         }
+    }
+}
 
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('overlay').classList.remove('show');
+function showCompletionScreen() {
+    document.querySelectorAll('#entryMain .tab-content').forEach(t => t.classList.remove('active'));
+    const screen = document.getElementById('completionScreen');
+    screen.classList.add('active');
+
+    const d = loadAll();
+    const completedAt = new Date(d._completedAt);
+    const deadline = new Date(completedAt);
+    deadline.setHours(DEADLINE_HOUR, 0, 0, 0);
+
+    const timeStr = completedAt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+    const statusEl = document.getElementById('timeStatus');
+    const detailEl = document.getElementById('timeDetail');
+
+    if (completedAt <= deadline) {
+        statusEl.textContent = 'Completed on time at ' + timeStr;
+        statusEl.className = 'time-status on-time';
+        const mins = Math.floor((deadline - completedAt) / 60000);
+        detailEl.textContent = Math.floor(mins/60) > 0 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm before deadline' : mins + 'm before deadline';
+    } else {
+        statusEl.textContent = 'Completed late at ' + timeStr;
+        statusEl.className = 'time-status late';
+        const mins = Math.floor((completedAt - deadline) / 60000);
+        detailEl.textContent = Math.floor(mins/60) > 0 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm after deadline' : mins + 'm after deadline';
+    }
+
+    document.querySelectorAll('#entryNav li').forEach(li => li.classList.remove('active'));
+}
+
+function switchEntryTab(bank) {
+    document.querySelectorAll('#entryMain .tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('completionScreen').classList.remove('active');
+    const tab = document.getElementById('etab-' + bank);
+    if (tab) tab.classList.add('active');
+
+    document.querySelectorAll('#entryNav li').forEach(li => {
+        li.classList.toggle('active', li.dataset.target === bank);
+    });
+    closeSidebar('entry');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateAllStatuses() {
+    BANKS.forEach(bank => {
+        const phase = getPhase(bank);
+        const el = document.getElementById('estatus-' + bank);
+        if (!el) return;
+        if (phase === 'analytics') {
+            el.innerHTML = '&#10003;';
+            el.className = 'status-icon done';
+        } else if (phase === 'achievement') {
+            el.innerHTML = '&#189;';
+            el.className = 'status-icon half';
+        } else {
+            el.innerHTML = '&#9675;';
+            el.className = 'status-icon pending';
         }
+    });
+}
 
-        // --- Toast ---
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
+// ════════════════════════════════════════
+// MONITOR
+// ════════════════════════════════════════
 
-        // --- Start ---
-        init();
-    </script>
+function switchMonitorTab(tab) {
+    document.querySelectorAll('#monitorMain .tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('mtab-' + tab).classList.add('active');
+    document.querySelectorAll('#monitorNav li').forEach(li => {
+        li.classList.toggle('active', li.dataset.target === tab);
+    });
+    closeSidebar('monitor');
+    if (tab === 'dashboard') renderDashboard();
+    if (tab === 'reports') renderReports();
+}
+
+function renderDashboard() {
+    const d = loadAll();
+    let totalPlan = 0, totalAch = 0, filledCount = 0;
+    const bankTotals = {};
+    const catTotals = {};
+
+    BANKS.forEach(b => {
+        bankTotals[b] = { plan: 0, ach: 0 };
+        CATEGORIES.forEach(c => {
+            if (!catTotals[c]) catTotals[c] = { plan: 0, ach: 0 };
+            const entry = (d[b] || {})[c] || {};
+            const p = parseFloat((entry.planAmount || '0').replace(/,/g, '')) || 0;
+            const a = parseFloat((entry.achAmount || '0').replace(/,/g, '')) || 0;
+            totalPlan += p;
+            totalAch += a;
+            bankTotals[b].plan += p;
+            bankTotals[b].ach += a;
+            catTotals[c].plan += p;
+            catTotals[c].ach += a;
+            if (entry.planAccount || entry.achAccount) filledCount++;
+        });
+    });
+
+    const overallPct = totalPlan > 0 ? Math.round((totalAch / totalPlan) * 100) : 0;
+
+    // Stats
+    document.getElementById('dashStats').innerHTML = `
+        <div class="stat-card"><div class="sc-label">Total Plan</div><div class="sc-value">${formatNum(totalPlan)}</div></div>
+        <div class="stat-card"><div class="sc-label">Total Achievement</div><div class="sc-value" style="color:#34c77b">${formatNum(totalAch)}</div></div>
+        <div class="stat-card"><div class="sc-label">Achievement %</div><div class="sc-value" style="color:${overallPct >= 80 ? '#34c77b' : overallPct >= 50 ? '#e88a3a' : '#e74c5e'}">${overallPct}%</div></div>
+        <div class="stat-card"><div class="sc-label">Entries</div><div class="sc-value">${filledCount}</div><div class="sc-sub">of ${BANKS.length * CATEGORIES.length} total</div></div>
+    `;
+
+    // Bank bar chart
+    const maxBank = Math.max(...BANKS.map(b => Math.max(bankTotals[b].plan, bankTotals[b].ach, 1)));
+    document.getElementById('bankBarChart').innerHTML = BANKS.map(b => {
+        const ph = Math.max((bankTotals[b].plan / maxBank) * 180, 4);
+        const ah = Math.max((bankTotals[b].ach / maxBank) * 180, 4);
+        return `<div class="bar-group">
+            <div class="bar-pair">
+                <div class="bar plan-bar" style="height:${ph}px" title="Plan: ${formatNum(bankTotals[b].plan)}"></div>
+                <div class="bar ach-bar" style="height:${ah}px" title="Ach: ${formatNum(bankTotals[b].ach)}"></div>
+            </div>
+            <div class="bar-label">${BANK_LABELS[b]}</div>
+        </div>`;
+    }).join('');
+
+    // Category bar chart
+    const maxCat = Math.max(...CATEGORIES.map(c => Math.max(catTotals[c].plan, catTotals[c].ach, 1)));
+    document.getElementById('catBarChart').innerHTML = CATEGORIES.map(c => {
+        const ph = Math.max((catTotals[c].plan / maxCat) * 180, 4);
+        const ah = Math.max((catTotals[c].ach / maxCat) * 180, 4);
+        return `<div class="bar-group">
+            <div class="bar-pair">
+                <div class="bar plan-bar" style="height:${ph}px"></div>
+                <div class="bar ach-bar" style="height:${ah}px"></div>
+            </div>
+            <div class="bar-label">${CAT_LABELS[c]}</div>
+        </div>`;
+    }).join('');
+
+    // Donut circles
+    document.getElementById('donutRow').innerHTML = BANKS.map(b => {
+        const pct = bankTotals[b].plan > 0 ? Math.round((bankTotals[b].ach / bankTotals[b].plan) * 100) : 0;
+        const color = pct >= 80 ? '#34c77b' : pct >= 50 ? '#e88a3a' : '#e74c5e';
+        const bg = `conic-gradient(${color} ${pct * 3.6}deg, #f0f1f5 ${pct * 3.6}deg)`;
+        return `<div class="donut-item">
+            <div class="donut-circle" style="background:${bg}">
+                <span style="background:#fff;width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:${color}">${pct}%</span>
+            </div>
+            <div class="di-label">${BANK_LABELS[b]}</div>
+        </div>`;
+    }).join('');
+}
+
+function renderReports() {
+    const d = loadAll();
+    const body = document.getElementById('reportBody');
+    let html = '';
+    let hasData = false;
+
+    BANKS.forEach(b => {
+        CATEGORIES.forEach(c => {
+            const entry = (d[b] || {})[c] || {};
+            const pAcc = entry.planAccount || '';
+            const pAmt = entry.planAmount || '';
+            const aAcc = entry.achAccount || '';
+            const aAmt = entry.achAmount || '';
+
+            if (!pAcc && !pAmt && !aAcc && !aAmt) return;
+            hasData = true;
+
+            const pv = parseFloat((pAmt || '0').replace(/,/g, '')) || 0;
+            const av = parseFloat((aAmt || '0').replace(/,/g, '')) || 0;
+            const pct = pv > 0 ? Math.round((av / pv) * 100) : (av > 0 ? 100 : 0);
+            const cls = pct >= 80 ? 'high' : pct >= 50 ? 'mid' : 'low';
+
+            html += `<tr>
+                <td><strong>${BANK_LABELS[b]}</strong></td>
+                <td>${CAT_LABELS[c]}</td>
+                <td>${esc(pAcc)}</td>
+                <td>${esc(pAmt)}</td>
+                <td>${esc(aAcc)}</td>
+                <td>${esc(aAmt)}</td>
+                <td><span class="pct-badge ${cls}">${pct}%</span></td>
+            </tr>`;
+        });
+    });
+
+    body.innerHTML = hasData ? html : '<tr><td colspan="7" class="no-data-msg">No data entered yet. Go to Data Entry to get started.</td></tr>';
+}
+
+// ── Helpers ──
+function formatNum(n) {
+    if (n === 0) return '0';
+    return n.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
 </body>
 </html>
