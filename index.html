@@ -624,6 +624,32 @@
         }
         .modal-footer .mf-info { font-size: 12px; color: #999; }
 
+        /* ===== FILTER PILL GROUPS ===== */
+        .filter-groups { margin-bottom: 28px; }
+        .filter-group { margin-bottom: 14px; }
+        .filter-group-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #999; margin-bottom: 8px;
+        }
+        .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .pill {
+            padding: 8px 20px;
+            border-radius: 10px;
+            border: 1.5px solid #e8eaf0;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pill:hover { border-color: #4a5fc1; color: #4a5fc1; }
+        .pill.active {
+            background: #4a5fc1;
+            border-color: #4a5fc1;
+            color: #fff;
+        }
+
         @media (max-width: 768px) {
             .modal { max-width: 100%; max-height: 95vh; border-radius: 12px; }
             .modal-header { padding: 16px 20px; }
@@ -632,6 +658,7 @@
             .modal-footer { padding: 12px 20px; }
             .report-btn-row { flex-direction: column; }
             .rbtn { min-width: unset; }
+            .pill { padding: 7px 14px; font-size: 12px; }
         }
 
         /* ===== TOAST ===== */
@@ -802,17 +829,37 @@
             <!-- Reports -->
             <div class="tab-content" id="mtab-reports">
                 <div class="page-header">Reports</div>
-                <p style="color:#888;font-size:14px;margin-bottom:24px">Select a report type to view detailed data in Excel format.</p>
+
+                <div class="filter-groups">
+                    <div class="filter-group">
+                        <div class="filter-group-label">Group By</div>
+                        <div class="pill-row" id="groupByPills">
+                            <div class="pill active" data-val="region" onclick="setGroupBy('region')">Region</div>
+                            <div class="pill" data-val="district" onclick="setGroupBy('district')">District</div>
+                            <div class="pill" data-val="branch" onclick="setGroupBy('branch')">Branch</div>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-group-label">Bank</div>
+                        <div class="pill-row" id="bankPills">
+                            <div class="pill active" data-val="all" onclick="setBankFilter('all')">All</div>
+                            <div class="pill" data-val="sbi" onclick="setBankFilter('sbi')">SBI</div>
+                            <div class="pill" data-val="csb" onclick="setBankFilter('csb')">CSB</div>
+                            <div class="pill" data-val="own" onclick="setBankFilter('own')">OWN</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="report-btn-row">
                     <div class="rbtn plan-btn" onclick="openReport('plan')">
                         <div style="font-size:28px;margin-bottom:8px">&#128203;</div>
                         Plan Report
-                        <div style="font-size:12px;font-weight:400;color:#999;margin-top:4px">View planned targets by region, district &amp; branch</div>
+                        <div style="font-size:12px;font-weight:400;color:#999;margin-top:4px">View planned targets</div>
                     </div>
                     <div class="rbtn ach-btn" onclick="openReport('achievement')">
                         <div style="font-size:28px;margin-bottom:8px">&#127942;</div>
                         Achievement Report
-                        <div style="font-size:12px;font-weight:400;color:#999;margin-top:4px">View actual collections by region, district &amp; branch</div>
+                        <div style="font-size:12px;font-weight:400;color:#999;margin-top:4px">View actual collections</div>
                     </div>
                 </div>
             </div>
@@ -1288,23 +1335,33 @@ const DEMO_HIERARCHY = {
 
 let currentReportType = 'plan';
 let currentReportView = 'region';
+let currentBankFilter = 'all';
+
+function setGroupBy(val) {
+    currentReportView = val;
+    document.querySelectorAll('#groupByPills .pill').forEach(p => p.classList.toggle('active', p.dataset.val === val));
+}
+
+function setBankFilter(val) {
+    currentBankFilter = val;
+    document.querySelectorAll('#bankPills .pill').forEach(p => p.classList.toggle('active', p.dataset.val === val));
+}
 
 function openReport(type) {
     currentReportType = type;
-    currentReportView = 'region';
 
     const modal = document.getElementById('reportModal');
     modal.classList.add('show');
 
-    const tag = document.getElementById('modalTag');
     if (type === 'plan') {
         document.getElementById('modalTitle').innerHTML = 'Plan Report <span class="mh-tag plan">Plan</span>';
     } else {
         document.getElementById('modalTitle').innerHTML = 'Achievement Report <span class="mh-tag ach">Achievement</span>';
     }
 
+    // Sync modal filter tabs with selected pills
     document.querySelectorAll('.modal-filters .filter-tab').forEach(t => {
-        t.classList.toggle('active', t.dataset.view === 'region');
+        t.classList.toggle('active', t.dataset.view === currentReportView);
     });
 
     renderReportTable();
@@ -1321,6 +1378,8 @@ function switchReportView(view) {
     document.querySelectorAll('.modal-filters .filter-tab').forEach(t => {
         t.classList.toggle('active', t.dataset.view === view);
     });
+    // Sync pills on the Reports page too
+    document.querySelectorAll('#groupByPills .pill').forEach(p => p.classList.toggle('active', p.dataset.val === view));
     renderReportTable();
 }
 
@@ -1347,7 +1406,9 @@ function renderReportTable() {
     let grandPlanTotal = 0;
     let totalEntries = 0;
 
-    BANKS.forEach(b => {
+    const filteredBanks = currentBankFilter === 'all' ? BANKS : [currentBankFilter];
+
+    filteredBanks.forEach(b => {
         const hier = DEMO_HIERARCHY[b] || { region: '-', district: '-', branch: '-' };
         const groupKey = hier[view];
 
@@ -1435,7 +1496,8 @@ function renderReportTable() {
 
     tbody.innerHTML = totalEntries > 0 ? html : `<tr><td colspan="${isPlan ? 6 : 8}" class="no-data-msg">No data available. Load demo data or enter data first.</td></tr>`;
 
-    document.getElementById('reportInfo').textContent = `${totalEntries} entries | Grouped by ${viewLabel} | ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`;
+    const bankLabel = currentBankFilter === 'all' ? 'All Banks' : BANK_LABELS[currentBankFilter];
+    document.getElementById('reportInfo').textContent = `${totalEntries} entries | ${bankLabel} | Grouped by ${viewLabel} | ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`;
 }
 
 function exportReportCSV() {
