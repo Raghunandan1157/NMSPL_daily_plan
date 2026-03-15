@@ -3,68 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NMSPL - Daily Plan</title>
+    <title>NMSPL</title>
     <style>
-        :root {
-            --primary: #4a5fc1;
-            --primary-light: #eef1ff;
-            --primary-dark: #3a4da8;
-            --bg: #f0f2f8;
-            --card-bg: #fff;
-            --text: #333;
-            --text-muted: #888;
-            --border: #e8eaf0;
-            --success: #34c77b;
-            --warning: #f5a623;
-            --danger: #e74c5e;
-            --sidebar-w: 260px;
-            --radius: 14px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            background: #f0f2f8;
+            color: #333;
             min-height: 100vh;
         }
 
-        /* ========== LAYOUT ========== */
-        .layout { display: flex; min-height: 100vh; }
-
-        /* ========== SIDEBAR ========== */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--card-bg);
-            border-right: 1px solid var(--border);
-            position: fixed;
-            top: 0; left: 0;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            transition: transform 0.3s ease;
+        .layout {
+            display: flex;
+            min-height: 100vh;
         }
 
-        .sidebar-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e8eaf0;
+            padding: 24px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
         }
 
         .sidebar-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 1px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #4a5fc1;
+            padding: 0 24px 24px;
+            border-bottom: 1px solid #e8eaf0;
+            margin-bottom: 12px;
         }
 
-        .sidebar-subtitle {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
+        .sidebar-nav {
+            list-style: none;
         }
-
-        .sidebar-nav { list-style: none; padding: 12px 0; }
 
         .sidebar-nav li {
             padding: 14px 24px;
@@ -73,854 +56,219 @@
             align-items: center;
             gap: 12px;
             font-size: 15px;
-            color: var(--text-muted);
+            color: #888;
             transition: all 0.2s;
             border-left: 3px solid transparent;
-            position: relative;
         }
 
-        .sidebar-nav li:hover { background: #f5f7ff; color: var(--primary); }
+        .sidebar-nav li:hover {
+            background: #f5f7ff;
+            color: #4a5fc1;
+        }
+
         .sidebar-nav li.active {
-            background: var(--primary-light);
-            color: var(--primary);
+            background: #f0f3ff;
+            color: #4a5fc1;
             font-weight: 600;
-            border-left-color: var(--primary);
+            border-left-color: #4a5fc1;
         }
 
         .sidebar-nav li .dot {
-            width: 10px; height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
+            background: #ccc;
             flex-shrink: 0;
         }
 
-        .sidebar-nav li .dot.green { background: var(--success); }
-        .sidebar-nav li .dot.yellow { background: var(--warning); }
-        .sidebar-nav li .dot.orange { background: #e88a3a; }
-        .sidebar-nav li .dot.red { background: var(--danger); }
-        .sidebar-nav li .dot.darkred { background: #a83242; }
-
-        .sidebar-nav li .count-badge {
-            margin-left: auto;
-            background: var(--bg);
-            color: var(--text-muted);
-            font-size: 12px;
-            font-weight: 700;
-            padding: 2px 10px;
-            border-radius: 12px;
+        .sidebar-nav li.active .dot {
+            background: #4a5fc1;
         }
 
-        .sidebar-nav li.active .count-badge {
-            background: var(--primary);
-            color: #fff;
+        .sidebar-nav li:hover .dot {
+            background: #4a5fc1;
         }
 
-        .sidebar-date {
-            padding: 20px 24px;
-            border-top: 1px solid var(--border);
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: var(--card-bg);
-        }
-
-        .sidebar-date label {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .sidebar-date input[type="date"] {
-            width: 100%;
-            margin-top: 8px;
-            padding: 10px 12px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            color: var(--text);
-            background: var(--bg);
-            outline: none;
-        }
-
-        .sidebar-date input[type="date"]:focus {
-            border-color: var(--primary);
-        }
-
-        /* ========== MOBILE HEADER ========== */
-        .mobile-header {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 60px;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            z-index: 99;
-            align-items: center;
-            padding: 0 16px;
-            justify-content: space-between;
-        }
-
-        .mobile-header .mob-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .hamburger {
-            width: 36px; height: 36px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            border: none;
-            background: none;
-            padding: 4px;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 22px; height: 2px;
-            background: var(--text);
-            border-radius: 2px;
-            transition: 0.3s;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 99;
-        }
-
-        .overlay.show { display: block; }
-
-        /* ========== MAIN ========== */
+        /* --- Main Content --- */
         .main {
-            margin-left: var(--sidebar-w);
+            margin-left: 240px;
             flex: 1;
             padding: 32px 40px;
-            max-width: 900px;
         }
 
         .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .page-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        /* ========== SUMMARY STRIP ========== */
-        .summary-strip {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .summary-item {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            box-shadow: 0 2px 10px rgba(74,95,193,0.06);
-            text-align: center;
-        }
-
-        .summary-item .s-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .summary-item .s-value {
             font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 28px;
         }
 
-        .summary-item .s-count {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
+        /* --- Cards --- */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(74, 95, 193, 0.07);
+            max-width: 640px;
         }
 
-        /* ========== SECTION ========== */
-        .section {
-            margin-bottom: 32px;
-            display: none;
+        .card-badge {
+            display: inline-block;
+            background: #eef1ff;
+            color: #4a5fc1;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
 
-        .section.active { display: block; }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .field-group {
             margin-bottom: 18px;
         }
 
-        .section-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--primary-light);
-            color: var(--primary);
-            font-size: 14px;
-            font-weight: 700;
-            padding: 8px 20px;
-            border-radius: 24px;
-            letter-spacing: 0.5px;
+        .field-group:last-child {
+            margin-bottom: 0;
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+        .field-label {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .btn-primary:hover { background: var(--primary-dark); }
-
-        .btn-danger {
-            background: #ffeef0;
-            color: var(--danger);
-        }
-
-        .btn-danger:hover { background: #fdd; }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 1.5px solid var(--border);
-        }
-
-        .btn-outline:hover { border-color: var(--primary); }
-
-        .btn-sm { padding: 6px 14px; font-size: 13px; }
-
-        /* ========== TABLE ========== */
-        .table-wrapper {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: 0 2px 12px rgba(74,95,193,0.07);
-            overflow: hidden;
-        }
-
-        .table-scroll { overflow-x: auto; }
-
-        table {
+        .field-input {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 500px;
-        }
-
-        thead { background: #f8f9fd; }
-
-        th {
-            padding: 14px 18px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border);
-        }
-
-        td {
-            padding: 14px 18px;
-            font-size: 14px;
-            border-bottom: 1px solid #f2f3f7;
-            vertical-align: middle;
-        }
-
-        tr:last-child td { border-bottom: none; }
-
-        tr:hover td { background: #fafbff; }
-
-        .table-input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--text);
+            padding: 14px 16px;
+            border: 1.5px solid #dde0ea;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #333;
             background: #fafbff;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .table-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(74,95,193,0.1);
+        .field-input:focus {
+            border-color: #4a5fc1;
+            box-shadow: 0 0 0 3px rgba(74, 95, 193, 0.12);
         }
 
-        .table-input::placeholder { color: #bbb; }
-
-        .row-actions { display: flex; gap: 6px; }
-
-        .icon-btn {
-            width: 32px; height: 32px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.2s;
-            background: transparent;
-        }
-
-        .icon-btn:hover { background: #f0f0f5; }
-        .icon-btn.del:hover { background: #ffeef0; color: var(--danger); }
-
-        /* ========== TOTALS ROW ========== */
-        .totals-row td {
-            font-weight: 700;
-            background: #f8f9fd;
-            color: var(--primary);
-            border-top: 2px solid var(--border);
-        }
-
-        /* ========== EMPTY STATE ========== */
-        .empty-state {
-            text-align: center;
-            padding: 48px 20px;
-            color: var(--text-muted);
-        }
-
-        .empty-state svg {
-            width: 48px; height: 48px;
-            margin-bottom: 12px;
-            opacity: 0.4;
-        }
-
-        .empty-state p { font-size: 15px; margin-bottom: 16px; }
-
-        /* ========== FOOTER ACTIONS ========== */
-        .footer-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 28px;
-            flex-wrap: wrap;
-        }
-
-        /* ========== TOAST ========== */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #333;
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 200;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success { background: var(--success); }
-
-        /* ========== TAB BAR (mobile) ========== */
-        .tab-bar {
-            display: none;
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 56px;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border);
-            z-index: 98;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .tab-bar-inner {
-            display: flex;
-            height: 100%;
-            min-width: max-content;
-        }
-
-        .tab-item {
-            flex: 0 0 auto;
-            padding: 0 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-top: 2px solid transparent;
-            white-space: nowrap;
-        }
-
-        .tab-item.active {
-            color: var(--primary);
-            border-top-color: var(--primary);
-        }
-
-        .tab-item .tab-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-        }
-
-        /* ========== RESPONSIVE ========== */
+        /* --- Responsive --- */
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .mobile-header { display: flex; }
-            .tab-bar { display: block; }
-
+            .sidebar {
+                display: none;
+            }
             .main {
                 margin-left: 0;
-                padding: 76px 16px 80px;
-                max-width: 100%;
+                padding: 20px 16px;
             }
-
-            .page-header h1 { font-size: 20px; }
-
-            .summary-strip {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+            .card {
+                padding: 20px;
             }
-
-            .summary-item { padding: 14px; }
-            .summary-item .s-value { font-size: 18px; }
-
-            .footer-actions { justify-content: stretch; }
-            .footer-actions .btn { flex: 1; justify-content: center; }
-
-            .toast { left: 16px; right: 16px; bottom: 72px; text-align: center; }
-        }
-
-        @media (max-width: 400px) {
-            .summary-strip { grid-template-columns: 1fr 1fr; gap: 8px; }
-        }
-
-        /* ========== PRINT ========== */
-        @media print {
-            .sidebar, .mobile-header, .tab-bar, .btn, .icon-btn { display: none !important; }
-            .main { margin-left: 0; padding: 0; }
-            .section { display: block !important; page-break-inside: avoid; }
-            .table-wrapper { box-shadow: none; border: 1px solid #ccc; }
         }
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
-    <header class="mobile-header">
-        <button class="hamburger" id="menuBtn" aria-label="Menu">
-            <span></span><span></span><span></span>
-        </button>
-        <span class="mob-title">NMSPL</span>
-        <span id="mobDate" style="font-size:13px;color:var(--text-muted)"></span>
-    </header>
-
-    <div class="overlay" id="overlay"></div>
-
     <div class="layout">
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-title">NMSPL</div>
-                <div class="sidebar-subtitle">Daily Collection Plan</div>
-            </div>
-            <ul class="sidebar-nav" id="sidebarNav"></ul>
-            <div class="sidebar-date">
-                <label>Plan Date</label>
-                <input type="date" id="planDate">
-            </div>
+        <aside class="sidebar">
+            <div class="sidebar-title">NMSPL</div>
+            <ul class="sidebar-nav" id="sidebarNav">
+                <li class="active" data-target="regular"><span class="dot"></span>Regular</li>
+                <li data-target="1-30-dpd"><span class="dot"></span>1-30 DPD</li>
+                <li data-target="31-60-dpd"><span class="dot"></span>31-60 DPD</li>
+                <li data-target="61-90-dpd"><span class="dot"></span>61-90 DPD</li>
+                <li data-target="npa"><span class="dot"></span>NPA</li>
+            </ul>
         </aside>
 
-        <!-- Main -->
+        <!-- Main Content -->
         <main class="main">
-            <div class="page-header">
-                <h1 id="pageTitle">Portfolio Overview</h1>
+            <div class="page-header">Portfolio Overview</div>
+
+            <!-- Regular -->
+            <div class="card" id="regular">
+                <span class="card-badge">REGULAR</span>
+                <div class="field-group">
+                    <div class="field-label">Account</div>
+                    <input type="text" class="field-input" placeholder="Enter account">
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Amount</div>
+                    <input type="text" class="field-input" placeholder="Enter amount">
+                </div>
             </div>
 
-            <div class="summary-strip" id="summaryStrip"></div>
+            <!-- 1-30 DPD -->
+            <div class="card" id="1-30-dpd">
+                <span class="card-badge">1-30 DPD</span>
+                <div class="field-group">
+                    <div class="field-label">Account</div>
+                    <input type="text" class="field-input" placeholder="Enter account">
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Amount</div>
+                    <input type="text" class="field-input" placeholder="Enter amount">
+                </div>
+            </div>
 
-            <div id="sectionsContainer"></div>
+            <!-- 31-60 DPD -->
+            <div class="card" id="31-60-dpd">
+                <span class="card-badge">31-60 DPD</span>
+                <div class="field-group">
+                    <div class="field-label">Account</div>
+                    <input type="text" class="field-input" placeholder="Enter account">
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Amount</div>
+                    <input type="text" class="field-input" placeholder="Enter amount">
+                </div>
+            </div>
 
-            <div class="footer-actions">
-                <button class="btn btn-outline" onclick="exportCSV()">Export CSV</button>
-                <button class="btn btn-primary" onclick="saveData()">Save Data</button>
+            <!-- 61-90 DPD -->
+            <div class="card" id="61-90-dpd">
+                <span class="card-badge">61-90 DPD</span>
+                <div class="field-group">
+                    <div class="field-label">Account</div>
+                    <input type="text" class="field-input" placeholder="Enter account">
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Amount</div>
+                    <input type="text" class="field-input" placeholder="Enter amount">
+                </div>
+            </div>
+
+            <!-- NPA -->
+            <div class="card" id="npa">
+                <span class="card-badge">NPA</span>
+                <div class="field-group">
+                    <div class="field-label">Account</div>
+                    <input type="text" class="field-input" placeholder="Enter account">
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Amount</div>
+                    <input type="text" class="field-input" placeholder="Enter amount">
+                </div>
             </div>
         </main>
     </div>
 
-    <!-- Mobile Tab Bar -->
-    <nav class="tab-bar">
-        <div class="tab-bar-inner" id="tabBar"></div>
-    </nav>
-
-    <div class="toast" id="toast"></div>
-
     <script>
-        const CATEGORIES = [
-            { id: 'regular',   label: 'Regular',   color: 'green' },
-            { id: '1-30-dpd',  label: '1-30 DPD',  color: 'yellow' },
-            { id: '31-60-dpd', label: '31-60 DPD', color: 'orange' },
-            { id: '61-90-dpd', label: '61-90 DPD', color: 'red' },
-            { id: 'npa',       label: 'NPA',       color: 'darkred' }
-        ];
-
-        let data = {};
-        let activeCategory = 'regular';
-
-        // ── Init ──
-        function init() {
-            loadData();
-            setDate();
-            renderSidebar();
-            renderTabBar();
-            renderSections();
-            renderSummary();
-            setActiveCategory(activeCategory);
-
-            document.getElementById('menuBtn').addEventListener('click', toggleSidebar);
-            document.getElementById('overlay').addEventListener('click', toggleSidebar);
-            document.getElementById('planDate').addEventListener('change', (e) => {
-                data._date = e.target.value;
-                saveData();
-            });
-        }
-
-        // ── Data ──
-        function getStorageKey() {
-            return 'nmspl_data';
-        }
-
-        function loadData() {
-            const saved = localStorage.getItem(getStorageKey());
-            if (saved) {
-                data = JSON.parse(saved);
-            } else {
-                data = { _date: new Date().toISOString().split('T')[0] };
-                CATEGORIES.forEach(c => { data[c.id] = []; });
-            }
-        }
-
-        function saveData() {
-            // Collect from inputs
-            CATEGORIES.forEach(cat => {
-                const rows = document.querySelectorAll(`#table-${cat.id} tbody tr:not(.totals-row)`);
-                data[cat.id] = [];
-                rows.forEach(row => {
-                    const inputs = row.querySelectorAll('.table-input');
-                    if (inputs.length >= 2) {
-                        const account = inputs[0].value.trim();
-                        const amount = inputs[1].value.trim();
-                        if (account || amount) {
-                            data[cat.id].push({ account, amount });
-                        }
-                    }
-                });
-            });
-            data._date = document.getElementById('planDate').value;
-            localStorage.setItem(getStorageKey(), JSON.stringify(data));
-            renderSummary();
-            updateBadges();
-            showToast('Data saved');
-        }
-
-        function setDate() {
-            const dateInput = document.getElementById('planDate');
-            dateInput.value = data._date || new Date().toISOString().split('T')[0];
-
-            const d = new Date(dateInput.value);
-            document.getElementById('mobDate').textContent =
-                d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
-        }
-
-        // ── Sidebar ──
-        function renderSidebar() {
-            const nav = document.getElementById('sidebarNav');
-            nav.innerHTML = CATEGORIES.map(c => `
-                <li data-target="${c.id}" onclick="setActiveCategory('${c.id}')">
-                    <span class="dot ${c.color}"></span>
-                    ${c.label}
-                    <span class="count-badge" id="badge-${c.id}">0</span>
-                </li>
-            `).join('');
-        }
-
-        // ── Tab Bar ──
-        function renderTabBar() {
-            document.getElementById('tabBar').innerHTML = CATEGORIES.map(c => `
-                <div class="tab-item" data-target="${c.id}" onclick="setActiveCategory('${c.id}')">
-                    <span class="tab-dot ${c.color}" style="background:var(--${c.color === 'green' ? 'success' : c.color === 'yellow' ? 'warning' : c.color === 'red' ? 'danger' : c.color === 'darkred' ? 'danger' : 'warning'})"></span>
-                    ${c.label}
-                </div>
-            `).join('');
-        }
-
-        // ── Sections ──
-        function renderSections() {
-            const container = document.getElementById('sectionsContainer');
-            container.innerHTML = CATEGORIES.map(cat => `
-                <div class="section" id="section-${cat.id}" data-cat="${cat.id}">
-                    <div class="section-header">
-                        <span class="section-badge">
-                            <span class="dot ${cat.color}" style="width:10px;height:10px;border-radius:50%;display:inline-block"></span>
-                            ${cat.label}
-                        </span>
-                        <button class="btn btn-primary btn-sm" onclick="addRow('${cat.id}')">+ Add Row</button>
-                    </div>
-                    <div class="table-wrapper">
-                        <div class="table-scroll">
-                            <table id="table-${cat.id}">
-                                <thead>
-                                    <tr>
-                                        <th style="width:50px">#</th>
-                                        <th>Account</th>
-                                        <th style="width:160px">Amount</th>
-                                        <th style="width:60px"></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            // Populate saved data
-            CATEGORIES.forEach(cat => {
-                const rows = data[cat.id] || [];
-                if (rows.length === 0) {
-                    addRow(cat.id); // Start with one empty row
-                } else {
-                    rows.forEach(r => addRow(cat.id, r.account, r.amount));
+        // Sidebar navigation - highlight active item & scroll to card
+        document.querySelectorAll('#sidebarNav li').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('#sidebarNav li').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                const target = document.getElementById(item.dataset.target);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
-        }
-
-        function addRow(catId, account = '', amount = '') {
-            const tbody = document.querySelector(`#table-${catId} tbody`);
-            const totalsRow = tbody.querySelector('.totals-row');
-            const idx = tbody.querySelectorAll('tr:not(.totals-row)').length + 1;
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="color:var(--text-muted);font-weight:600">${idx}</td>
-                <td><input type="text" class="table-input" placeholder="Account name" value="${escapeHtml(account)}"></td>
-                <td><input type="text" class="table-input" placeholder="0.00" value="${escapeHtml(amount)}" oninput="updateTotal('${catId}')"></td>
-                <td>
-                    <div class="row-actions">
-                        <button class="icon-btn del" onclick="removeRow(this, '${catId}')" title="Remove">&#x2715;</button>
-                    </div>
-                </td>
-            `;
-
-            if (totalsRow) {
-                tbody.insertBefore(tr, totalsRow);
-            } else {
-                tbody.appendChild(tr);
-            }
-
-            ensureTotalsRow(catId);
-            updateTotal(catId);
-            reindex(catId);
-        }
-
-        function removeRow(btn, catId) {
-            const tbody = btn.closest('tbody');
-            const rows = tbody.querySelectorAll('tr:not(.totals-row)');
-            if (rows.length <= 1) return; // Keep at least 1
-            btn.closest('tr').remove();
-            reindex(catId);
-            updateTotal(catId);
-        }
-
-        function reindex(catId) {
-            const rows = document.querySelectorAll(`#table-${catId} tbody tr:not(.totals-row)`);
-            rows.forEach((tr, i) => {
-                tr.querySelector('td').textContent = i + 1;
-            });
-        }
-
-        function ensureTotalsRow(catId) {
-            const tbody = document.querySelector(`#table-${catId} tbody`);
-            if (tbody.querySelector('.totals-row')) return;
-            const tr = document.createElement('tr');
-            tr.className = 'totals-row';
-            tr.innerHTML = `
-                <td></td>
-                <td style="text-align:right">Total</td>
-                <td id="total-${catId}">0.00</td>
-                <td></td>
-            `;
-            tbody.appendChild(tr);
-        }
-
-        function updateTotal(catId) {
-            const inputs = document.querySelectorAll(`#table-${catId} tbody tr:not(.totals-row) td:nth-child(3) input`);
-            let total = 0;
-            inputs.forEach(inp => {
-                const v = parseFloat(inp.value.replace(/,/g, '')) || 0;
-                total += v;
-            });
-            const el = document.getElementById(`total-${catId}`);
-            if (el) el.textContent = formatNumber(total);
-        }
-
-        // ── Summary ──
-        function renderSummary() {
-            const strip = document.getElementById('summaryStrip');
-            let grandTotal = 0;
-            let grandCount = 0;
-
-            const items = CATEGORIES.map(cat => {
-                const rows = data[cat.id] || [];
-                const count = rows.filter(r => r.account).length;
-                const total = rows.reduce((s, r) => s + (parseFloat(String(r.amount).replace(/,/g, '')) || 0), 0);
-                grandTotal += total;
-                grandCount += count;
-                return { label: cat.label, total, count };
-            });
-
-            strip.innerHTML = `
-                <div class="summary-item">
-                    <div class="s-label">Total Portfolio</div>
-                    <div class="s-value">${formatNumber(grandTotal)}</div>
-                    <div class="s-count">${grandCount} accounts</div>
-                </div>
-            ` + items.map(it => `
-                <div class="summary-item">
-                    <div class="s-label">${it.label}</div>
-                    <div class="s-value">${formatNumber(it.total)}</div>
-                    <div class="s-count">${it.count} accounts</div>
-                </div>
-            `).join('');
-        }
-
-        function updateBadges() {
-            CATEGORIES.forEach(cat => {
-                const rows = data[cat.id] || [];
-                const count = rows.filter(r => r.account).length;
-                const el = document.getElementById(`badge-${cat.id}`);
-                if (el) el.textContent = count;
-
-                // Tab bar
-                document.querySelectorAll(`.tab-item[data-target="${cat.id}"]`).forEach(t => {
-                    // no-op for now, count is label
-                });
-            });
-        }
-
-        // ── Active Category ──
-        function setActiveCategory(id) {
-            activeCategory = id;
-
-            // Sidebar
-            document.querySelectorAll('#sidebarNav li').forEach(li => {
-                li.classList.toggle('active', li.dataset.target === id);
-            });
-
-            // Tab bar
-            document.querySelectorAll('.tab-item').forEach(t => {
-                t.classList.toggle('active', t.dataset.target === id);
-            });
-
-            // Sections
-            document.querySelectorAll('.section').forEach(s => {
-                s.classList.toggle('active', s.dataset.cat === id);
-            });
-
-            // Close sidebar on mobile
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar.classList.contains('open')) toggleSidebar();
-
-            // Update page title
-            const cat = CATEGORIES.find(c => c.id === id);
-            document.getElementById('pageTitle').textContent = cat ? cat.label + ' Accounts' : 'Portfolio Overview';
-        }
-
-        // ── Mobile Sidebar ──
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('show');
-        }
-
-        // ── Export ──
-        function exportCSV() {
-            saveData();
-            let csv = 'Category,Account,Amount\n';
-            CATEGORIES.forEach(cat => {
-                (data[cat.id] || []).forEach(r => {
-                    if (r.account || r.amount) {
-                        csv += `"${cat.label}","${r.account}","${r.amount}"\n`;
-                    }
-                });
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `nmspl_plan_${data._date || 'export'}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('CSV exported');
-        }
-
-        // ── Helpers ──
-        function formatNumber(n) {
-            if (n === 0) return '0.00';
-            return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = 'toast show ' + type;
-            setTimeout(() => toast.className = 'toast', 2500);
-        }
-
-        // ── Start ──
-        init();
+        });
     </script>
 </body>
 </html>
