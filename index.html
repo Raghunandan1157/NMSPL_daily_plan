@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NMSPL</title>
+    <title>NMSPL - Daily Plan</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -18,36 +14,48 @@
             min-height: 100vh;
         }
 
-        .layout {
-            display: flex;
-            min-height: 100vh;
-        }
+        .layout { display: flex; min-height: 100vh; }
 
         /* --- Sidebar --- */
         .sidebar {
             width: 240px;
             background: #fff;
             border-right: 1px solid #e8eaf0;
-            padding: 24px 0;
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             height: 100vh;
             overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e8eaf0;
         }
 
         .sidebar-title {
             font-size: 20px;
             font-weight: 700;
             color: #4a5fc1;
-            padding: 0 24px 24px;
-            border-bottom: 1px solid #e8eaf0;
-            margin-bottom: 12px;
         }
 
-        .sidebar-nav {
-            list-style: none;
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
         }
+
+        .sidebar-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            padding: 18px 24px 8px;
+        }
+
+        .sidebar-nav { list-style: none; }
 
         .sidebar-nav li {
             padding: 14px 24px;
@@ -61,10 +69,7 @@
             border-left: 3px solid transparent;
         }
 
-        .sidebar-nav li:hover {
-            background: #f5f7ff;
-            color: #4a5fc1;
-        }
+        .sidebar-nav li:hover { background: #f5f7ff; color: #4a5fc1; }
 
         .sidebar-nav li.active {
             background: #f0f3ff;
@@ -74,20 +79,64 @@
         }
 
         .sidebar-nav li .dot {
-            width: 8px;
-            height: 8px;
+            width: 8px; height: 8px;
             border-radius: 50%;
             background: #ccc;
             flex-shrink: 0;
         }
 
-        .sidebar-nav li.active .dot {
-            background: #4a5fc1;
+        .sidebar-nav li.active .dot { background: #4a5fc1; }
+        .sidebar-nav li:hover .dot { background: #4a5fc1; }
+
+        .sidebar-nav li .status-icon {
+            margin-left: auto;
+            font-size: 14px;
         }
 
-        .sidebar-nav li:hover .dot {
-            background: #4a5fc1;
+        .sidebar-nav li .status-icon.done { color: #34c77b; }
+        .sidebar-nav li .status-icon.pending { color: #ccc; }
+
+        /* --- Mobile Header --- */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: #fff;
+            border-bottom: 1px solid #e8eaf0;
+            z-index: 99;
+            align-items: center;
+            padding: 0 16px;
+            justify-content: space-between;
         }
+
+        .mobile-header .mob-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4a5fc1;
+        }
+
+        .hamburger {
+            width: 36px; height: 36px;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            gap: 5px; cursor: pointer;
+            border: none; background: none;
+        }
+
+        .hamburger span {
+            display: block; width: 22px; height: 2px;
+            background: #333; border-radius: 2px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 99;
+        }
+
+        .overlay.show { display: block; }
 
         /* --- Main Content --- */
         .main {
@@ -101,9 +150,24 @@
             font-weight: 700;
             color: #333;
             margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header .bank-tag {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: #eef1ff;
+            color: #4a5fc1;
         }
 
         /* --- Cards --- */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
         .card {
             background: #fff;
             border-radius: 16px;
@@ -125,13 +189,8 @@
             letter-spacing: 0.5px;
         }
 
-        .field-group {
-            margin-bottom: 18px;
-        }
-
-        .field-group:last-child {
-            margin-bottom: 0;
-        }
+        .field-group { margin-bottom: 18px; }
+        .field-group:last-child { margin-bottom: 0; }
 
         .field-label {
             font-size: 15px;
@@ -157,118 +216,688 @@
             box-shadow: 0 0 0 3px rgba(74, 95, 193, 0.12);
         }
 
+        /* --- Save & Next Button --- */
+        .action-bar {
+            max-width: 640px;
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #4a5fc1;
+            color: #fff;
+        }
+
+        .btn-primary:hover { background: #3a4da8; }
+
+        .btn-outline {
+            background: #fff;
+            color: #4a5fc1;
+            border: 1.5px solid #dde0ea;
+        }
+
+        .btn-outline:hover { border-color: #4a5fc1; }
+
+        .btn .arrow { font-size: 18px; }
+
+        /* --- Completion Screen --- */
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 500px;
+        }
+
+        .completion-screen.active { display: block; }
+
+        .completion-icon {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: #e8f9ef;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 24px;
+        }
+
+        .completion-screen h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .completion-screen p {
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .achievement-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(74, 95, 193, 0.07);
+            margin-bottom: 20px;
+        }
+
+        .achievement-box .deadline {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .achievement-box .time-status {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .achievement-box .time-status.on-time { color: #34c77b; }
+        .achievement-box .time-status.late { color: #e74c5e; }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .summary-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(74, 95, 193, 0.06);
+        }
+
+        .summary-card .sc-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+
+        .summary-card .sc-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #4a5fc1;
+        }
+
+        /* --- Toast --- */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #34c77b;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 200;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+
         /* --- Responsive --- */
         @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-header { display: flex; }
+
             .main {
                 margin-left: 0;
-                padding: 20px 16px;
+                padding: 72px 16px 20px;
             }
-            .card {
-                padding: 20px;
+
+            .card { padding: 20px; }
+
+            .action-bar { flex-direction: column; }
+            .action-bar .btn { width: 100%; justify-content: center; }
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .toast {
+                left: 16px; right: 16px;
+                bottom: 16px;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="hamburger" id="menuBtn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <span class="mob-title">NMSPL</span>
+        <span id="mobDate" style="font-size:13px;color:#999"></span>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+
     <div class="layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-title">NMSPL</div>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">NMSPL</div>
+                <div class="sidebar-subtitle">Daily Collection Plan</div>
+            </div>
+
+            <div class="sidebar-section-label">Banks</div>
             <ul class="sidebar-nav" id="sidebarNav">
-                <li class="active" data-target="regular"><span class="dot"></span>Regular</li>
-                <li data-target="1-30-dpd"><span class="dot"></span>1-30 DPD</li>
-                <li data-target="31-60-dpd"><span class="dot"></span>31-60 DPD</li>
-                <li data-target="61-90-dpd"><span class="dot"></span>61-90 DPD</li>
-                <li data-target="npa"><span class="dot"></span>NPA</li>
+                <li class="active" data-target="sbi" onclick="switchTab('sbi')">
+                    <span class="dot"></span>SBI
+                    <span class="status-icon pending" id="status-sbi">&#9675;</span>
+                </li>
+                <li data-target="csb" onclick="switchTab('csb')">
+                    <span class="dot"></span>CSB
+                    <span class="status-icon pending" id="status-csb">&#9675;</span>
+                </li>
+                <li data-target="own" onclick="switchTab('own')">
+                    <span class="dot"></span>OWN
+                    <span class="status-icon pending" id="status-own">&#9675;</span>
+                </li>
             </ul>
         </aside>
 
         <!-- Main Content -->
-        <main class="main">
-            <div class="page-header">Portfolio Overview</div>
-
-            <!-- Regular -->
-            <div class="card" id="regular">
-                <span class="card-badge">REGULAR</span>
-                <div class="field-group">
-                    <div class="field-label">Account</div>
-                    <input type="text" class="field-input" placeholder="Enter account">
+        <main class="main" id="mainContent">
+            <!-- SBI Tab -->
+            <div class="tab-content active" id="tab-sbi">
+                <div class="page-header">
+                    Portfolio Overview <span class="bank-tag">SBI</span>
                 </div>
-                <div class="field-group">
-                    <div class="field-label">Amount</div>
-                    <input type="text" class="field-input" placeholder="Enter amount">
+
+                <div class="card">
+                    <span class="card-badge">REGULAR</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="regular" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="regular" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">1-30 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="1-30-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="1-30-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">31-60 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="31-60-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="31-60-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">61-90 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="61-90-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="61-90-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">NPA</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="npa" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="sbi" data-cat="npa" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="saveAndNext('sbi')">
+                        Save & Next <span class="arrow">&#8594;</span> CSB
+                    </button>
                 </div>
             </div>
 
-            <!-- 1-30 DPD -->
-            <div class="card" id="1-30-dpd">
-                <span class="card-badge">1-30 DPD</span>
-                <div class="field-group">
-                    <div class="field-label">Account</div>
-                    <input type="text" class="field-input" placeholder="Enter account">
+            <!-- CSB Tab -->
+            <div class="tab-content" id="tab-csb">
+                <div class="page-header">
+                    Portfolio Overview <span class="bank-tag">CSB</span>
                 </div>
-                <div class="field-group">
-                    <div class="field-label">Amount</div>
-                    <input type="text" class="field-input" placeholder="Enter amount">
+
+                <div class="card">
+                    <span class="card-badge">REGULAR</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="regular" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="regular" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">1-30 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="1-30-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="1-30-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">31-60 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="31-60-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="31-60-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">61-90 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="61-90-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="61-90-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">NPA</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="npa" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="csb" data-cat="npa" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-outline" onclick="switchTab('sbi')">
+                        <span class="arrow">&#8592;</span> Back to SBI
+                    </button>
+                    <button class="btn btn-primary" onclick="saveAndNext('csb')">
+                        Save & Next <span class="arrow">&#8594;</span> OWN
+                    </button>
                 </div>
             </div>
 
-            <!-- 31-60 DPD -->
-            <div class="card" id="31-60-dpd">
-                <span class="card-badge">31-60 DPD</span>
-                <div class="field-group">
-                    <div class="field-label">Account</div>
-                    <input type="text" class="field-input" placeholder="Enter account">
+            <!-- OWN Tab -->
+            <div class="tab-content" id="tab-own">
+                <div class="page-header">
+                    Portfolio Overview <span class="bank-tag">OWN</span>
                 </div>
-                <div class="field-group">
-                    <div class="field-label">Amount</div>
-                    <input type="text" class="field-input" placeholder="Enter amount">
+
+                <div class="card">
+                    <span class="card-badge">REGULAR</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="regular" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="regular" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">1-30 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="1-30-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="1-30-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">31-60 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="31-60-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="31-60-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">61-90 DPD</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="61-90-dpd" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="61-90-dpd" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-badge">NPA</span>
+                    <div class="field-group">
+                        <div class="field-label">Account</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="npa" data-field="account" placeholder="Enter account">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Amount</div>
+                        <input type="text" class="field-input" data-bank="own" data-cat="npa" data-field="amount" placeholder="Enter amount">
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-outline" onclick="switchTab('csb')">
+                        <span class="arrow">&#8592;</span> Back to CSB
+                    </button>
+                    <button class="btn btn-primary" onclick="saveAndFinish()">
+                        Save & Complete &#10003;
+                    </button>
                 </div>
             </div>
 
-            <!-- 61-90 DPD -->
-            <div class="card" id="61-90-dpd">
-                <span class="card-badge">61-90 DPD</span>
-                <div class="field-group">
-                    <div class="field-label">Account</div>
-                    <input type="text" class="field-input" placeholder="Enter account">
-                </div>
-                <div class="field-group">
-                    <div class="field-label">Amount</div>
-                    <input type="text" class="field-input" placeholder="Enter amount">
-                </div>
-            </div>
+            <!-- Completion Screen -->
+            <div class="completion-screen" id="completionScreen">
+                <div class="completion-icon">&#10003;</div>
+                <h2>All Done!</h2>
+                <p>Daily plan for all banks has been saved successfully.</p>
 
-            <!-- NPA -->
-            <div class="card" id="npa">
-                <span class="card-badge">NPA</span>
-                <div class="field-group">
-                    <div class="field-label">Account</div>
-                    <input type="text" class="field-input" placeholder="Enter account">
+                <div class="achievement-box">
+                    <div class="deadline">Achievement Deadline: 6:00 PM</div>
+                    <div class="time-status" id="timeStatus"></div>
+                    <div id="timeDetail" style="font-size:13px;color:#888;margin-top:4px"></div>
                 </div>
-                <div class="field-group">
-                    <div class="field-label">Amount</div>
-                    <input type="text" class="field-input" placeholder="Enter amount">
+
+                <div class="summary-cards" id="summaryCards"></div>
+
+                <div class="action-bar" style="justify-content:center;max-width:100%;margin-top:24px">
+                    <button class="btn btn-outline" onclick="editAgain()">Edit Entries</button>
                 </div>
             </div>
         </main>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
-        // Sidebar navigation - highlight active item & scroll to card
-        document.querySelectorAll('#sidebarNav li').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('#sidebarNav li').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                const target = document.getElementById(item.dataset.target);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const BANKS = ['sbi', 'csb', 'own'];
+        const BANK_LABELS = { sbi: 'SBI', csb: 'CSB', own: 'OWN' };
+        const CATEGORIES = ['regular', '1-30-dpd', '31-60-dpd', '61-90-dpd', 'npa'];
+        const DEADLINE_HOUR = 18; // 6 PM
+
+        let savedBanks = new Set();
+
+        // --- Init ---
+        function init() {
+            loadData();
+            document.getElementById('menuBtn').addEventListener('click', toggleSidebar);
+            document.getElementById('overlay').addEventListener('click', toggleSidebar);
+
+            const today = new Date();
+            document.getElementById('mobDate').textContent =
+                today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+        }
+
+        // --- Data persistence ---
+        function getStorageKey() {
+            const today = new Date().toISOString().split('T')[0];
+            return 'nmspl_' + today;
+        }
+
+        function saveBank(bank) {
+            const inputs = document.querySelectorAll(`[data-bank="${bank}"]`);
+            const bankData = {};
+            inputs.forEach(inp => {
+                const cat = inp.dataset.cat;
+                const field = inp.dataset.field;
+                if (!bankData[cat]) bankData[cat] = {};
+                bankData[cat][field] = inp.value;
+            });
+
+            const key = getStorageKey();
+            const allData = JSON.parse(localStorage.getItem(key) || '{}');
+            allData[bank] = bankData;
+            allData._savedBanks = Array.from(savedBanks);
+            allData._completedAt = allData._completedAt || null;
+            localStorage.setItem(key, JSON.stringify(allData));
+        }
+
+        function loadData() {
+            const key = getStorageKey();
+            const allData = JSON.parse(localStorage.getItem(key) || '{}');
+
+            BANKS.forEach(bank => {
+                if (allData[bank]) {
+                    const bankData = allData[bank];
+                    Object.keys(bankData).forEach(cat => {
+                        Object.keys(bankData[cat]).forEach(field => {
+                            const inp = document.querySelector(
+                                `[data-bank="${bank}"][data-cat="${cat}"][data-field="${field}"]`
+                            );
+                            if (inp) inp.value = bankData[cat][field];
+                        });
+                    });
                 }
             });
-        });
+
+            if (allData._savedBanks) {
+                savedBanks = new Set(allData._savedBanks);
+                savedBanks.forEach(b => updateSidebarStatus(b, true));
+            }
+
+            if (allData._completedAt && savedBanks.size === 3) {
+                showCompletion(allData._completedAt);
+            }
+        }
+
+        // --- Tab switching ---
+        function switchTab(bank) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + bank).classList.add('active');
+            document.getElementById('completionScreen').classList.remove('active');
+
+            document.querySelectorAll('#sidebarNav li').forEach(li => {
+                li.classList.toggle('active', li.dataset.target === bank);
+            });
+
+            // Close mobile sidebar
+            closeSidebar();
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- Save & Next ---
+        function saveAndNext(currentBank) {
+            saveBank(currentBank);
+            savedBanks.add(currentBank);
+            updateSidebarStatus(currentBank, true);
+
+            const currentIdx = BANKS.indexOf(currentBank);
+            const nextBank = BANKS[currentIdx + 1];
+
+            showToast(BANK_LABELS[currentBank] + ' saved');
+
+            if (nextBank) {
+                setTimeout(() => switchTab(nextBank), 400);
+            }
+        }
+
+        function saveAndFinish() {
+            saveBank('own');
+            savedBanks.add('own');
+            updateSidebarStatus('own', true);
+
+            const key = getStorageKey();
+            const allData = JSON.parse(localStorage.getItem(key) || '{}');
+            const now = new Date().toISOString();
+            allData._completedAt = now;
+            allData._savedBanks = Array.from(savedBanks);
+            localStorage.setItem(key, JSON.stringify(allData));
+
+            showToast('All banks saved!');
+            setTimeout(() => showCompletion(now), 500);
+        }
+
+        // --- Completion ---
+        function showCompletion(completedAtISO) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            const screen = document.getElementById('completionScreen');
+            screen.classList.add('active');
+
+            // Time check
+            const completedAt = new Date(completedAtISO);
+            const deadline = new Date(completedAt);
+            deadline.setHours(DEADLINE_HOUR, 0, 0, 0);
+
+            const timeStr = completedAt.toLocaleTimeString('en-IN', {
+                hour: '2-digit', minute: '2-digit', hour12: true
+            });
+
+            const statusEl = document.getElementById('timeStatus');
+            const detailEl = document.getElementById('timeDetail');
+
+            if (completedAt <= deadline) {
+                statusEl.textContent = 'Completed on time at ' + timeStr;
+                statusEl.className = 'time-status on-time';
+                const diff = deadline - completedAt;
+                const mins = Math.floor(diff / 60000);
+                const hrs = Math.floor(mins / 60);
+                const remMins = mins % 60;
+                detailEl.textContent = hrs > 0
+                    ? hrs + 'h ' + remMins + 'm before deadline'
+                    : remMins + 'm before deadline';
+            } else {
+                statusEl.textContent = 'Completed late at ' + timeStr;
+                statusEl.className = 'time-status late';
+                const diff = completedAt - deadline;
+                const mins = Math.floor(diff / 60000);
+                const hrs = Math.floor(mins / 60);
+                const remMins = mins % 60;
+                detailEl.textContent = hrs > 0
+                    ? hrs + 'h ' + remMins + 'm after deadline'
+                    : remMins + 'm after deadline';
+            }
+
+            // Summary
+            const key = getStorageKey();
+            const allData = JSON.parse(localStorage.getItem(key) || '{}');
+            const summaryEl = document.getElementById('summaryCards');
+            summaryEl.innerHTML = BANKS.map(bank => {
+                const bd = allData[bank] || {};
+                let totalAmt = 0;
+                let filledCats = 0;
+                CATEGORIES.forEach(cat => {
+                    if (bd[cat] && bd[cat].amount) {
+                        const v = parseFloat(bd[cat].amount.replace(/,/g, '')) || 0;
+                        totalAmt += v;
+                    }
+                    if (bd[cat] && bd[cat].account) filledCats++;
+                });
+                return `
+                    <div class="summary-card">
+                        <div class="sc-label">${BANK_LABELS[bank]}</div>
+                        <div class="sc-value">${filledCats} / ${CATEGORIES.length} filled</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Deactivate all sidebar items
+            document.querySelectorAll('#sidebarNav li').forEach(li => li.classList.remove('active'));
+        }
+
+        function editAgain() {
+            switchTab('sbi');
+        }
+
+        // --- Sidebar status ---
+        function updateSidebarStatus(bank, done) {
+            const el = document.getElementById('status-' + bank);
+            if (done) {
+                el.innerHTML = '&#10003;';
+                el.className = 'status-icon done';
+            } else {
+                el.innerHTML = '&#9675;';
+                el.className = 'status-icon pending';
+            }
+        }
+
+        // --- Mobile sidebar ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        // --- Toast ---
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // --- Start ---
+        init();
     </script>
 </body>
 </html>
