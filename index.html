@@ -494,6 +494,9 @@
 <div class="login-screen" id="loginScreen">
     <div class="login-logo">NMSPL</div>
     <div class="login-sub">Daily Collection Plan</div>
+    <div style="margin-bottom:32px">
+        <button class="btn btn-outline" onclick="loadDemoData()" style="font-size:13px;padding:8px 20px;border-radius:10px;border:1.5px solid #dde0ea;background:#fff;color:#666;cursor:pointer;font-weight:600">Load Demo Data</button>
+    </div>
     <div class="login-cards">
         <div class="login-card" onclick="enterApp('entry')">
             <div class="lc-icon entry">&#9998;</div>
@@ -1129,6 +1132,51 @@ function showToast(msg) {
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+// ── Load Demo Data ──
+function loadDemoData() {
+    const key = storageKey();
+    const demo = {
+        sbi: {
+            _planSaved: true,
+            _achSaved: true,
+            'regular': { planAccount: 'Rajesh Kumar', planAmount: '125000', achAccount: 'Rajesh Kumar', achAmount: '118000' },
+            '1-30-dpd': { planAccount: 'Meena Devi', planAmount: '85000', achAccount: 'Meena Devi', achAmount: '72000' },
+            '31-60-dpd': { planAccount: 'Suresh Patel', planAmount: '64000', achAccount: 'Suresh Patel', achAmount: '45000' },
+            '61-90-dpd': { planAccount: 'Anita Sharma', planAmount: '52000', achAccount: 'Anita Sharma', achAmount: '28000' },
+            'npa': { planAccount: 'Vikram Singh', planAmount: '95000', achAccount: 'Vikram Singh', achAmount: '35000' }
+        },
+        csb: {
+            _planSaved: true,
+            _achSaved: true,
+            'regular': { planAccount: 'Priya Nair', planAmount: '98000', achAccount: 'Priya Nair', achAmount: '98000' },
+            '1-30-dpd': { planAccount: 'Arun Menon', planAmount: '67000', achAccount: 'Arun Menon', achAmount: '55000' },
+            '31-60-dpd': { planAccount: 'Lakshmi Iyer', planAmount: '43000', achAccount: 'Lakshmi Iyer', achAmount: '38000' },
+            '61-90-dpd': { planAccount: 'George Thomas', planAmount: '38000', achAccount: 'George Thomas', achAmount: '22000' },
+            'npa': { planAccount: 'Deepa Pillai', planAmount: '72000', achAccount: 'Deepa Pillai', achAmount: '50000' }
+        },
+        own: {
+            _planSaved: true,
+            _achSaved: true,
+            'regular': { planAccount: 'Mohan Das', planAmount: '150000', achAccount: 'Mohan Das', achAmount: '142000' },
+            '1-30-dpd': { planAccount: 'Fatima Begum', planAmount: '78000', achAccount: 'Fatima Begum', achAmount: '65000' },
+            '31-60-dpd': { planAccount: 'Ramesh Yadav', planAmount: '55000', achAccount: 'Ramesh Yadav', achAmount: '40000' },
+            '61-90-dpd': { planAccount: 'Sunita Mishra', planAmount: '41000', achAccount: 'Sunita Mishra', achAmount: '30000' },
+            'npa': { planAccount: 'Kamal Joshi', planAmount: '88000', achAccount: 'Kamal Joshi', achAmount: '42000' }
+        },
+        _completedAt: new Date().toISOString()
+    };
+    localStorage.setItem(key, JSON.stringify(demo));
+    showToast('Demo data loaded');
+}
+
+// Auto-load demo if no data exists for today
+(function() {
+    const existing = localStorage.getItem(storageKey());
+    if (!existing || Object.keys(JSON.parse(existing)).length === 0) {
+        loadDemoData();
+    }
+})();
 </script>
 </body>
 </html>
