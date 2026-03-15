@@ -1333,7 +1333,7 @@ function getAggregatedData(level, isPlan, filteredBanks, d) {
 
         if (!groups[groupKey]) {
             groups[groupKey] = { name: groupKey, data: {} };
-            CATEGORIES.forEach(c => { groups[groupKey].data[c] = { account: '', amount: 0 }; });
+            CATEGORIES.forEach(c => { groups[groupKey].data[c] = { account: 0, amount: 0 }; });
         }
 
         CATEGORIES.forEach(c => {
@@ -1341,8 +1341,7 @@ function getAggregatedData(level, isPlan, filteredBanks, d) {
             const amt = parseFloat(((isPlan ? entry.planAmount : entry.achAmount) || '0').replace(/,/g, '')) || 0;
             const acc = (isPlan ? entry.planAccount : entry.achAccount) || '';
             groups[groupKey].data[c].amount += amt;
-            if (acc && !groups[groupKey].data[c].account) groups[groupKey].data[c].account = acc;
-            else if (acc) groups[groupKey].data[c].account += ', ' + acc;
+            if (acc) groups[groupKey].data[c].account += 1;
         });
     });
 
@@ -1359,7 +1358,8 @@ function generateSingleReportHTML(title, level, rows, isPlan) {
     const fmt = n => n === 0 ? '-' : n.toLocaleString('en-IN');
     const totalCols = 11; // 1 name + 5 categories x 2 (acc + amt)
 
-    let totals = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
+    let tAcc = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
+    let tAmt = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
     let bodyRows = '';
 
     rows.forEach((row, i) => {
@@ -1368,16 +1368,13 @@ function generateSingleReportHTML(title, level, rows, isPlan) {
         const v = {}, a = {};
         CATEGORIES.forEach(c => {
             v[c] = rd[c] ? rd[c].amount : 0;
-            a[c] = rd[c] ? rd[c].account : '';
+            a[c] = rd[c] ? rd[c].account : 0;
         });
 
-        totals.regular += v['regular'];
-        totals.dpd130 += v['1-30-dpd'];
-        totals.dpd3160 += v['31-60-dpd'];
-        totals.dpd6190 += v['61-90-dpd'];
-        totals.npa += v['npa'];
+        tAmt.regular += v['regular']; tAmt.dpd130 += v['1-30-dpd']; tAmt.dpd3160 += v['31-60-dpd']; tAmt.dpd6190 += v['61-90-dpd']; tAmt.npa += v['npa'];
+        tAcc.regular += a['regular']; tAcc.dpd130 += a['1-30-dpd']; tAcc.dpd3160 += a['31-60-dpd']; tAcc.dpd6190 += a['61-90-dpd']; tAcc.npa += a['npa'];
 
-        const ac = (color, acc, amt) => `<td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:left;font-size:10px">${acc}</td><td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:right;font-size:10px">${fmt(amt)}</td>`;
+        const ac = (color, acc, amt) => `<td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:center;font-size:10px">${fmt(acc)}</td><td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:right;font-size:10px">${fmt(amt)}</td>`;
 
         bodyRows += `<tr style="font-size:11px;background:${bg}">
             <td style="background:${bg};border:1px solid ${C.border};padding:4px 8px;text-align:left;font-weight:600">${row.name}</td>
@@ -1392,15 +1389,15 @@ function generateSingleReportHTML(title, level, rows, isPlan) {
     const tc = val => `<td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px;text-align:center;font-size:10px">${fmt(val)}</td>`;
     const totalRow = `<tr style="font-weight:bold;font-size:11px;background:#FFFF00">
         <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:left">Grand Total</td>
-        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.regular)}
-        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.dpd130)}
-        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.dpd3160)}
-        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.dpd6190)}
-        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.npa)}
+        ${tc(tAcc.regular)}${tc(tAmt.regular)}
+        ${tc(tAcc.dpd130)}${tc(tAmt.dpd130)}
+        ${tc(tAcc.dpd3160)}${tc(tAmt.dpd3160)}
+        ${tc(tAcc.dpd6190)}${tc(tAmt.dpd6190)}
+        ${tc(tAcc.npa)}${tc(tAmt.npa)}
     </tr>`;
 
     const catH = (color, label, colspan) => `<td colspan="2" style="background:${color};border:1px solid #000;padding:4px 8px;text-align:center;font-weight:bold;font-size:10px">${label}</td>`;
-    const subH = (color) => `<td style="background:${color};border:1px solid #000;padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Account</td><td style="background:${color};border:1px solid #000;padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Amount</td>`;
+    const subH = (color) => `<td style="background:${color};border:1px solid #000;padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Acc</td><td style="background:${color};border:1px solid #000;padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Amt</td>`;
 
     return `
         <div style="background:white;padding:20px;font-family:Arial,sans-serif">
@@ -1438,8 +1435,10 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
     });
     const sorted = Array.from(merged.values()).sort((a, b) => a.name.localeCompare(b.name));
 
-    const tP = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
-    const tA = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
+    const tPAmt = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
+    const tAAmt = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
+    const tPAcc = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
+    const tAAcc = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
     let achPctSum = 0, achPctCount = 0;
 
     let bodyRows = '';
@@ -1449,18 +1448,20 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
         CATEGORIES.forEach(c => {
             pv[c] = row.plan[c] ? row.plan[c].amount : 0;
             av[c] = row.ach[c] ? row.ach[c].amount : 0;
-            pa[c] = row.plan[c] ? row.plan[c].account : '';
-            aa[c] = row.ach[c] ? row.ach[c].account : '';
+            pa[c] = row.plan[c] ? row.plan[c].account : 0;
+            aa[c] = row.ach[c] ? row.ach[c].account : 0;
         });
 
-        tP.regular += pv['regular']; tP.dpd130 += pv['1-30-dpd']; tP.dpd3160 += pv['31-60-dpd']; tP.dpd6190 += pv['61-90-dpd']; tP.npa += pv['npa'];
-        tA.regular += av['regular']; tA.dpd130 += av['1-30-dpd']; tA.dpd3160 += av['31-60-dpd']; tA.dpd6190 += av['61-90-dpd']; tA.npa += av['npa'];
+        tPAmt.regular += pv['regular']; tPAmt.dpd130 += pv['1-30-dpd']; tPAmt.dpd3160 += pv['31-60-dpd']; tPAmt.dpd6190 += pv['61-90-dpd']; tPAmt.npa += pv['npa'];
+        tAAmt.regular += av['regular']; tAAmt.dpd130 += av['1-30-dpd']; tAAmt.dpd3160 += av['31-60-dpd']; tAAmt.dpd6190 += av['61-90-dpd']; tAAmt.npa += av['npa'];
+        tPAcc.regular += pa['regular']; tPAcc.dpd130 += pa['1-30-dpd']; tPAcc.dpd3160 += pa['31-60-dpd']; tPAcc.dpd6190 += pa['61-90-dpd']; tPAcc.npa += pa['npa'];
+        tAAcc.regular += aa['regular']; tAAcc.dpd130 += aa['1-30-dpd']; tAAcc.dpd3160 += aa['31-60-dpd']; tAAcc.dpd6190 += aa['61-90-dpd']; tAAcc.npa += aa['npa'];
 
         const rowPlanTotal = pv['regular'] + pv['1-30-dpd'] + pv['31-60-dpd'] + pv['61-90-dpd'] + pv['npa'];
         const rowAchTotal = av['regular'] + av['1-30-dpd'] + av['31-60-dpd'] + av['61-90-dpd'] + av['npa'];
         if (rowPlanTotal > 0) { achPctSum += (rowAchTotal / rowPlanTotal) * 100; achPctCount++; }
 
-        const ac = (color, acc, amt) => `<td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:left;font-size:10px">${acc}</td><td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:right;font-size:10px">${fmt(amt)}</td>`;
+        const ac = (color, acc, amt) => `<td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:center;font-size:10px">${fmt(acc)}</td><td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:right;font-size:10px">${fmt(amt)}</td>`;
 
         bodyRows += `<tr style="background:${bg}">
             <td style="background:${bg};border:1px solid ${C.border};padding:4px 8px;text-align:left;font-weight:600;font-size:11px">${row.name}</td>
@@ -1471,8 +1472,8 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
     });
 
     // Executive Summary
-    const totalPlanAmt = tP.regular + tP.dpd130 + tP.dpd3160 + tP.dpd6190 + tP.npa;
-    const totalAchAmt = tA.regular + tA.dpd130 + tA.dpd3160 + tA.dpd6190 + tA.npa;
+    const totalPlanAmt = tPAmt.regular + tPAmt.dpd130 + tPAmt.dpd3160 + tPAmt.dpd6190 + tPAmt.npa;
+    const totalAchAmt = tAAmt.regular + tAAmt.dpd130 + tAAmt.dpd3160 + tAAmt.dpd6190 + tAAmt.npa;
     const totalPct = totalPlanAmt > 0 ? Math.round((totalAchAmt / totalPlanAmt) * 100) : 0;
     const avgPct = achPctCount > 0 ? Math.round(achPctSum / achPctCount) : 0;
     const gap = totalPlanAmt - totalAchAmt;
@@ -1506,7 +1507,7 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
     const catH = (color, label) => `<td colspan="2" style="background:${color};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:9px;font-weight:bold">${label}</td>`;
     const catHeaders = `${catH(C.ftod,'Regular')}${catH(C.slipped,'1-30 DPD')}${catH(C.slipped,'31-60 DPD')}${catH(C.pnpa,'61-90 DPD')}${catH(C.npa,'NPA')}`;
 
-    const subH = (color) => `<td style="background:${color};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Account</td><td style="background:${color};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Amount</td>`;
+    const subH = (color) => `<td style="background:${color};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Acc</td><td style="background:${color};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Amt</td>`;
     const subHeaders = `${subH(C.ftod)}${subH(C.slipped)}${subH(C.slipped)}${subH(C.pnpa)}${subH(C.npa)}`;
 
     const tc = val => `<td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px;text-align:center;font-size:10px">${fmt(val)}</td>`;
@@ -1514,9 +1515,9 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
 
     const totalRow = `<tr style="font-weight:bold;background:#FFFF00">
         <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:left;font-size:11px">Grand Total</td>
-        ${te}${tc(tP.regular)}${te}${tc(tP.dpd130)}${te}${tc(tP.dpd3160)}${te}${tc(tP.dpd6190)}${te}${tc(tP.npa)}
+        ${tc(tPAcc.regular)}${tc(tPAmt.regular)}${tc(tPAcc.dpd130)}${tc(tPAmt.dpd130)}${tc(tPAcc.dpd3160)}${tc(tPAmt.dpd3160)}${tc(tPAcc.dpd6190)}${tc(tPAmt.dpd6190)}${tc(tPAcc.npa)}${tc(tPAmt.npa)}
         <td style="background:#000;width:2px;padding:0"></td>
-        ${te}${tc(tA.regular)}${te}${tc(tA.dpd130)}${te}${tc(tA.dpd3160)}${te}${tc(tA.dpd6190)}${te}${tc(tA.npa)}
+        ${tc(tAAcc.regular)}${tc(tAAmt.regular)}${tc(tAAcc.dpd130)}${tc(tAAmt.dpd130)}${tc(tAAcc.dpd3160)}${tc(tAAmt.dpd3160)}${tc(tAAcc.dpd6190)}${tc(tAAmt.dpd6190)}${tc(tAAcc.npa)}${tc(tAAmt.npa)}
     </tr>`;
 
     return `
