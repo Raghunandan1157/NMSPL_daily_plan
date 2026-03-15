@@ -454,6 +454,186 @@
         .pct-badge.low { background: #ffeef0; color: #e74c5e; }
         .no-data-msg { text-align: center; padding: 40px; color: #999; font-size: 15px; }
 
+        /* ===== REPORT BUTTONS ROW ===== */
+        .report-btn-row {
+            display: flex; gap: 12px; flex-wrap: wrap;
+        }
+        .rbtn {
+            padding: 12px 28px;
+            border: 2px solid #e8eaf0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            background: #fff;
+            color: #666;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: center;
+            min-width: 140px;
+        }
+        .rbtn:hover { border-color: #4a5fc1; color: #4a5fc1; }
+        .rbtn.plan-btn:hover, .rbtn.plan-btn.sel { border-color: #e88a3a; background: #fff8f0; color: #e88a3a; }
+        .rbtn.ach-btn:hover, .rbtn.ach-btn.sel { border-color: #34c77b; background: #f0fdf4; color: #34c77b; }
+
+        /* ===== REPORT MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 960px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.95) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            border-bottom: 1px solid #e8eaf0;
+            flex-shrink: 0;
+        }
+        .modal-header h2 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .modal-header .mh-tag {
+            font-size: 11px; font-weight: 700; padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .modal-header .mh-tag.plan { background: #fff3e0; color: #e88a3a; }
+        .modal-header .mh-tag.ach { background: #e8f9ef; color: #34c77b; }
+        .close-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: #f0f2f8;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .close-btn:hover { background: #e74c5e; color: #fff; }
+
+        /* Filter tabs inside modal */
+        .modal-filters {
+            display: flex;
+            gap: 0;
+            padding: 0 28px;
+            border-bottom: 1px solid #e8eaf0;
+            flex-shrink: 0;
+            overflow-x: auto;
+        }
+        .filter-tab {
+            padding: 14px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #999;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .filter-tab:hover { color: #4a5fc1; }
+        .filter-tab.active { color: #4a5fc1; border-bottom-color: #4a5fc1; }
+
+        /* Excel-style table */
+        .modal-body {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+        }
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .excel-table thead { position: sticky; top: 0; z-index: 2; }
+        .excel-table th {
+            background: #f0f2f8;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #777;
+            border-bottom: 2px solid #dde0ea;
+            border-right: 1px solid #e8eaf0;
+            white-space: nowrap;
+        }
+        .excel-table th:last-child { border-right: none; }
+        .excel-table td {
+            padding: 11px 16px;
+            border-bottom: 1px solid #eef0f5;
+            border-right: 1px solid #f2f3f7;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .excel-table td:last-child { border-right: none; }
+        .excel-table tr:hover td { background: #f8f9ff; }
+        .excel-table .row-num {
+            color: #bbb;
+            font-weight: 600;
+            text-align: center;
+            background: #fafbfd;
+            width: 40px;
+            border-right: 2px solid #e8eaf0;
+        }
+        .excel-table .bank-cell { font-weight: 700; color: #4a5fc1; }
+        .excel-table .amount-cell { font-family: 'SF Mono', 'Consolas', monospace; text-align: right; font-weight: 600; }
+        .excel-table .total-row td {
+            background: #f0f2f8;
+            font-weight: 800;
+            border-top: 2px solid #dde0ea;
+            color: #333;
+        }
+        .excel-table .subtotal-row td {
+            background: #f8f9fd;
+            font-weight: 700;
+            border-top: 1.5px solid #e8eaf0;
+            color: #555;
+        }
+        .modal-footer {
+            padding: 16px 28px;
+            border-top: 1px solid #e8eaf0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .modal-footer .mf-info { font-size: 12px; color: #999; }
+
+        @media (max-width: 768px) {
+            .modal { max-width: 100%; max-height: 95vh; border-radius: 12px; }
+            .modal-header { padding: 16px 20px; }
+            .modal-filters { padding: 0 20px; }
+            .excel-table th, .excel-table td { padding: 10px 12px; }
+            .modal-footer { padding: 12px 20px; }
+            .report-btn-row { flex-direction: column; }
+            .rbtn { min-width: unset; }
+        }
+
         /* ===== TOAST ===== */
         .toast {
             position: fixed; bottom: 24px; right: 24px;
@@ -622,26 +802,46 @@
             <!-- Reports -->
             <div class="tab-content" id="mtab-reports">
                 <div class="page-header">Reports</div>
-                <div class="report-table-wrap">
-                    <div class="report-table-scroll">
-                        <table class="report-table" id="reportTable">
-                            <thead>
-                                <tr>
-                                    <th>Bank</th>
-                                    <th>Category</th>
-                                    <th>Plan Account</th>
-                                    <th>Plan Amount</th>
-                                    <th>Ach. Account</th>
-                                    <th>Ach. Amount</th>
-                                    <th>Achievement %</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reportBody"></tbody>
-                        </table>
+                <p style="color:#888;font-size:14px;margin-bottom:24px">Select a report type to view detailed data in Excel format.</p>
+                <div class="report-btn-row">
+                    <div class="rbtn plan-btn" onclick="openReport('plan')">
+                        <div style="font-size:28px;margin-bottom:8px">&#128203;</div>
+                        Plan Report
+                        <div style="font-size:12px;font-weight:400;color:#999;margin-top:4px">View planned targets by region, district &amp; branch</div>
+                    </div>
+                    <div class="rbtn ach-btn" onclick="openReport('achievement')">
+                        <div style="font-size:28px;margin-bottom:8px">&#127942;</div>
+                        Achievement Report
+                        <div style="font-size:12px;font-weight:400;color:#999;margin-top:4px">View actual collections by region, district &amp; branch</div>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
+</div>
+
+<!-- ==================== REPORT MODAL ==================== -->
+<div class="modal-overlay" id="reportModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modalTitle">Report <span class="mh-tag" id="modalTag"></span></h2>
+            <button class="close-btn" onclick="closeReport()">&#10005;</button>
+        </div>
+        <div class="modal-filters">
+            <div class="filter-tab active" data-view="region" onclick="switchReportView('region')">Region</div>
+            <div class="filter-tab" data-view="district" onclick="switchReportView('district')">District</div>
+            <div class="filter-tab" data-view="branch" onclick="switchReportView('branch')">Branch</div>
+        </div>
+        <div class="modal-body">
+            <table class="excel-table">
+                <thead id="reportThead"></thead>
+                <tbody id="reportTbody"></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <div class="mf-info" id="reportInfo"></div>
+            <button class="btn btn-outline" style="padding:8px 20px;font-size:13px" onclick="exportReportCSV()">Export CSV</button>
+        </div>
     </div>
 </div>
 
@@ -1076,41 +1276,200 @@ function renderDashboard() {
     }).join('');
 }
 
-function renderReports() {
+// ════════════════════════════════════════
+// REPORT MODAL
+// ════════════════════════════════════════
+
+const DEMO_HIERARCHY = {
+    sbi: { region: 'South Region', district: 'Ernakulam', branch: 'SBI Kochi Main' },
+    csb: { region: 'South Region', district: 'Thrissur', branch: 'CSB Thrissur HO' },
+    own: { region: 'Central Region', district: 'Palakkad', branch: 'NMSPL Palakkad' }
+};
+
+let currentReportType = 'plan';
+let currentReportView = 'region';
+
+function openReport(type) {
+    currentReportType = type;
+    currentReportView = 'region';
+
+    const modal = document.getElementById('reportModal');
+    modal.classList.add('show');
+
+    const tag = document.getElementById('modalTag');
+    if (type === 'plan') {
+        document.getElementById('modalTitle').innerHTML = 'Plan Report <span class="mh-tag plan">Plan</span>';
+    } else {
+        document.getElementById('modalTitle').innerHTML = 'Achievement Report <span class="mh-tag ach">Achievement</span>';
+    }
+
+    document.querySelectorAll('.modal-filters .filter-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.view === 'region');
+    });
+
+    renderReportTable();
+    document.body.style.overflow = 'hidden';
+}
+
+function closeReport() {
+    document.getElementById('reportModal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function switchReportView(view) {
+    currentReportView = view;
+    document.querySelectorAll('.modal-filters .filter-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.view === view);
+    });
+    renderReportTable();
+}
+
+function renderReportTable() {
     const d = loadAll();
-    const body = document.getElementById('reportBody');
-    let html = '';
-    let hasData = false;
+    const isPlan = currentReportType === 'plan';
+    const view = currentReportView;
+    const thead = document.getElementById('reportThead');
+    const tbody = document.getElementById('reportTbody');
+
+    // Build header
+    let viewLabel = view === 'region' ? 'Region' : view === 'district' ? 'District' : 'Branch';
+    let cols = `<tr><th class="row-num">#</th><th>${viewLabel}</th><th>Bank</th><th>Category</th><th>Account</th><th class="amount-cell">Amount</th>`;
+    if (!isPlan) {
+        cols += `<th class="amount-cell">Plan Amt</th><th>%</th>`;
+    }
+    cols += `</tr>`;
+    thead.innerHTML = cols;
+
+    // Group data
+    const groups = {};
+    let rowNum = 0;
+    let grandTotal = 0;
+    let grandPlanTotal = 0;
+    let totalEntries = 0;
 
     BANKS.forEach(b => {
+        const hier = DEMO_HIERARCHY[b] || { region: '-', district: '-', branch: '-' };
+        const groupKey = hier[view];
+
         CATEGORIES.forEach(c => {
             const entry = (d[b] || {})[c] || {};
-            const pAcc = entry.planAccount || '';
-            const pAmt = entry.planAmount || '';
-            const aAcc = entry.achAccount || '';
-            const aAmt = entry.achAmount || '';
+            const acc = isPlan ? (entry.planAccount || '') : (entry.achAccount || '');
+            const amt = isPlan ? (entry.planAmount || '') : (entry.achAmount || '');
+            const planAmt = entry.planAmount || '';
 
-            if (!pAcc && !pAmt && !aAcc && !aAmt) return;
-            hasData = true;
+            if (!acc && !amt) return;
 
-            const pv = parseFloat((pAmt || '0').replace(/,/g, '')) || 0;
-            const av = parseFloat((aAmt || '0').replace(/,/g, '')) || 0;
-            const pct = pv > 0 ? Math.round((av / pv) * 100) : (av > 0 ? 100 : 0);
-            const cls = pct >= 80 ? 'high' : pct >= 50 ? 'mid' : 'low';
-
-            html += `<tr>
-                <td><strong>${BANK_LABELS[b]}</strong></td>
-                <td>${CAT_LABELS[c]}</td>
-                <td>${esc(pAcc)}</td>
-                <td>${esc(pAmt)}</td>
-                <td>${esc(aAcc)}</td>
-                <td>${esc(aAmt)}</td>
-                <td><span class="pct-badge ${cls}">${pct}%</span></td>
-            </tr>`;
+            if (!groups[groupKey]) groups[groupKey] = [];
+            groups[groupKey].push({
+                bank: BANK_LABELS[b],
+                cat: CAT_LABELS[c],
+                acc, amt, planAmt
+            });
         });
     });
 
-    body.innerHTML = hasData ? html : '<tr><td colspan="7" class="no-data-msg">No data entered yet. Go to Data Entry to get started.</td></tr>';
+    let html = '';
+    const groupKeys = Object.keys(groups);
+
+    groupKeys.forEach(gk => {
+        const rows = groups[gk];
+        let groupTotal = 0;
+        let groupPlanTotal = 0;
+
+        rows.forEach((r, i) => {
+            rowNum++;
+            totalEntries++;
+            const amtVal = parseFloat((r.amt || '0').replace(/,/g, '')) || 0;
+            const planVal = parseFloat((r.planAmt || '0').replace(/,/g, '')) || 0;
+            groupTotal += amtVal;
+            grandTotal += amtVal;
+            grandPlanTotal += planVal;
+            groupPlanTotal += planVal;
+
+            html += `<tr>`;
+            html += `<td class="row-num">${rowNum}</td>`;
+            html += i === 0
+                ? `<td rowspan="${rows.length}" style="font-weight:700;color:#333;vertical-align:top;border-right:2px solid #e8eaf0">${esc(gk)}</td>`
+                : '';
+            html += `<td class="bank-cell">${r.bank}</td>`;
+            html += `<td>${r.cat}</td>`;
+            html += `<td>${esc(r.acc)}</td>`;
+            html += `<td class="amount-cell">${formatNum(amtVal)}</td>`;
+            if (!isPlan) {
+                const pct = planVal > 0 ? Math.round((amtVal / planVal) * 100) : 0;
+                const cls = pct >= 80 ? 'high' : pct >= 50 ? 'mid' : 'low';
+                html += `<td class="amount-cell" style="color:#999">${formatNum(planVal)}</td>`;
+                html += `<td><span class="pct-badge ${cls}">${pct}%</span></td>`;
+            }
+            html += `</tr>`;
+        });
+
+        // Subtotal row
+        html += `<tr class="subtotal-row">`;
+        html += `<td class="row-num"></td>`;
+        html += `<td style="text-align:right;border-right:2px solid #e8eaf0">${esc(gk)} Total</td>`;
+        html += `<td></td><td></td><td></td>`;
+        html += `<td class="amount-cell">${formatNum(groupTotal)}</td>`;
+        if (!isPlan) {
+            const gpct = groupPlanTotal > 0 ? Math.round((groupTotal / groupPlanTotal) * 100) : 0;
+            const gcls = gpct >= 80 ? 'high' : gpct >= 50 ? 'mid' : 'low';
+            html += `<td class="amount-cell">${formatNum(groupPlanTotal)}</td>`;
+            html += `<td><span class="pct-badge ${gcls}">${gpct}%</span></td>`;
+        }
+        html += `</tr>`;
+    });
+
+    // Grand total
+    html += `<tr class="total-row">`;
+    html += `<td class="row-num"></td>`;
+    html += `<td style="border-right:2px solid #dde0ea">Grand Total</td>`;
+    html += `<td></td><td></td><td></td>`;
+    html += `<td class="amount-cell">${formatNum(grandTotal)}</td>`;
+    if (!isPlan) {
+        const tpct = grandPlanTotal > 0 ? Math.round((grandTotal / grandPlanTotal) * 100) : 0;
+        const tcls = tpct >= 80 ? 'high' : tpct >= 50 ? 'mid' : 'low';
+        html += `<td class="amount-cell">${formatNum(grandPlanTotal)}</td>`;
+        html += `<td><span class="pct-badge ${tcls}">${tpct}%</span></td>`;
+    }
+    html += `</tr>`;
+
+    tbody.innerHTML = totalEntries > 0 ? html : `<tr><td colspan="${isPlan ? 6 : 8}" class="no-data-msg">No data available. Load demo data or enter data first.</td></tr>`;
+
+    document.getElementById('reportInfo').textContent = `${totalEntries} entries | Grouped by ${viewLabel} | ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`;
+}
+
+function exportReportCSV() {
+    const table = document.querySelector('.excel-table');
+    let csv = '';
+    table.querySelectorAll('tr').forEach(tr => {
+        const cells = [];
+        tr.querySelectorAll('th, td').forEach(td => {
+            cells.push('"' + td.textContent.trim().replace(/"/g, '""') + '"');
+        });
+        csv += cells.join(',') + '\n';
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `nmspl_${currentReportType}_report_${currentReportView}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV exported');
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeReport();
+});
+
+// Close modal on overlay click
+document.getElementById('reportModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeReport();
+});
+
+function renderReports() {
+    // No-op, reports are now modal-based
 }
 
 // ── Helpers ──
