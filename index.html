@@ -1353,11 +1353,11 @@ function getAggregatedData(level, isPlan, filteredBanks, d) {
 function generateSingleReportHTML(title, level, rows, isPlan) {
     const C = {
         ftod: '#87CEEB', slipped: '#90EE90', pnpa: '#FFB6C1',
-        npa: '#FFFACD', fy: '#E0E0E0', disb: '#FFDAB9', kyc: '#DDA0DD',
-        border: '#000000'
+        npa: '#FFFACD', border: '#000000'
     };
     const firstCol = level;
     const fmt = n => n === 0 ? '-' : n.toLocaleString('en-IN');
+    const totalCols = 11; // 1 name + 5 categories x 2 (acc + amt)
 
     let totals = { regular: 0, dpd130: 0, dpd3160: 0, dpd6190: 0, npa: 0 };
     let bodyRows = '';
@@ -1365,8 +1365,11 @@ function generateSingleReportHTML(title, level, rows, isPlan) {
     rows.forEach((row, i) => {
         const bg = i % 2 === 0 ? '#FFFFFF' : '#F8F9FA';
         const rd = row.data;
-        const v = {};
-        CATEGORIES.forEach(c => { v[c] = rd[c] ? rd[c].amount : 0; });
+        const v = {}, a = {};
+        CATEGORIES.forEach(c => {
+            v[c] = rd[c] ? rd[c].amount : 0;
+            a[c] = rd[c] ? rd[c].account : '';
+        });
 
         totals.regular += v['regular'];
         totals.dpd130 += v['1-30-dpd'];
@@ -1374,49 +1377,41 @@ function generateSingleReportHTML(title, level, rows, isPlan) {
         totals.dpd6190 += v['61-90-dpd'];
         totals.npa += v['npa'];
 
-        bodyRows += `
-            <tr style="font-size:11px;background:${bg}">
-                <td style="background:${bg};border:1px solid ${C.border};padding:4px 8px;text-align:left;font-weight:600">${row.name}</td>
-                <td style="background:${C.ftod};border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(v['regular'])}</td>
-                <td style="background:${C.slipped};border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(v['1-30-dpd'])}</td>
-                <td style="background:${C.slipped};border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(v['31-60-dpd'])}</td>
-                <td style="background:${C.pnpa};border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(v['61-90-dpd'])}</td>
-                <td style="background:${C.npa};border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(v['npa'])}</td>
-            </tr>`;
+        const ac = (color, acc, amt) => `<td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:left;font-size:10px">${acc}</td><td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:right;font-size:10px">${fmt(amt)}</td>`;
+
+        bodyRows += `<tr style="font-size:11px;background:${bg}">
+            <td style="background:${bg};border:1px solid ${C.border};padding:4px 8px;text-align:left;font-weight:600">${row.name}</td>
+            ${ac(C.ftod, a['regular'], v['regular'])}
+            ${ac(C.slipped, a['1-30-dpd'], v['1-30-dpd'])}
+            ${ac(C.slipped, a['31-60-dpd'], v['31-60-dpd'])}
+            ${ac(C.pnpa, a['61-90-dpd'], v['61-90-dpd'])}
+            ${ac(C.npa, a['npa'], v['npa'])}
+        </tr>`;
     });
 
-    const totalRow = `
-        <tr style="font-weight:bold;font-size:11px;background:#FFFF00">
-            <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:left">Grand Total</td>
-            <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(totals.regular)}</td>
-            <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(totals.dpd130)}</td>
-            <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(totals.dpd3160)}</td>
-            <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(totals.dpd6190)}</td>
-            <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:center">${fmt(totals.npa)}</td>
-        </tr>`;
+    const tc = val => `<td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px;text-align:center;font-size:10px">${fmt(val)}</td>`;
+    const totalRow = `<tr style="font-weight:bold;font-size:11px;background:#FFFF00">
+        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:left">Grand Total</td>
+        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.regular)}
+        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.dpd130)}
+        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.dpd3160)}
+        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.dpd6190)}
+        <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>${tc(totals.npa)}
+    </tr>`;
+
+    const catH = (color, label, colspan) => `<td colspan="2" style="background:${color};border:1px solid #000;padding:4px 8px;text-align:center;font-weight:bold;font-size:10px">${label}</td>`;
+    const subH = (color) => `<td style="background:${color};border:1px solid #000;padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Account</td><td style="background:${color};border:1px solid #000;padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Amount</td>`;
 
     return `
         <div style="background:white;padding:20px;font-family:Arial,sans-serif">
             <table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:11px;width:100%;background:white">
-                <tr>
-                    <td colspan="6" style="text-align:center;font-weight:bold;font-size:14px;padding:10px;background:#fff;border:1px solid #000;color:#000">
-                        ${title}
-                    </td>
-                </tr>
-                <tr style="font-weight:bold;font-size:10px">
+                <tr><td colspan="${totalCols}" style="text-align:center;font-weight:bold;font-size:14px;padding:10px;background:#fff;border:1px solid #000">${title}</td></tr>
+                <tr style="font-weight:bold">
                     <td rowspan="2" style="background:#fff;border:1px solid #000;padding:4px 8px;text-align:center;vertical-align:middle;width:140px">${firstCol}</td>
-                    <td style="background:${C.ftod};border:1px solid #000;padding:4px 8px;text-align:center">Regular</td>
-                    <td style="background:${C.slipped};border:1px solid #000;padding:4px 8px;text-align:center">1-30 DPD</td>
-                    <td style="background:${C.slipped};border:1px solid #000;padding:4px 8px;text-align:center">31-60 DPD</td>
-                    <td style="background:${C.pnpa};border:1px solid #000;padding:4px 8px;text-align:center">61-90 DPD</td>
-                    <td style="background:${C.npa};border:1px solid #000;padding:4px 8px;text-align:center">NPA</td>
+                    ${catH(C.ftod, 'Regular')}${catH(C.slipped, '1-30 DPD')}${catH(C.slipped, '31-60 DPD')}${catH(C.pnpa, '61-90 DPD')}${catH(C.npa, 'NPA')}
                 </tr>
-                <tr style="font-weight:bold;font-size:9px">
-                    <td style="background:${C.ftod};border:1px solid #000;padding:3px 6px;text-align:center">Amount</td>
-                    <td style="background:${C.slipped};border:1px solid #000;padding:3px 6px;text-align:center">Amount</td>
-                    <td style="background:${C.slipped};border:1px solid #000;padding:3px 6px;text-align:center">Amount</td>
-                    <td style="background:${C.pnpa};border:1px solid #000;padding:3px 6px;text-align:center">Amount</td>
-                    <td style="background:${C.npa};border:1px solid #000;padding:3px 6px;text-align:center">Amount</td>
+                <tr style="font-weight:bold">
+                    ${subH(C.ftod)}${subH(C.slipped)}${subH(C.slipped)}${subH(C.pnpa)}${subH(C.npa)}
                 </tr>
                 ${bodyRows}
                 ${totalRow}
@@ -1450,10 +1445,12 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
     let bodyRows = '';
     sorted.forEach((row, i) => {
         const bg = i % 2 === 0 ? '#FFFFFF' : '#F8F9FA';
-        const pv = {}, av = {};
+        const pv = {}, av = {}, pa = {}, aa = {};
         CATEGORIES.forEach(c => {
             pv[c] = row.plan[c] ? row.plan[c].amount : 0;
             av[c] = row.ach[c] ? row.ach[c].amount : 0;
+            pa[c] = row.plan[c] ? row.plan[c].account : '';
+            aa[c] = row.ach[c] ? row.ach[c].account : '';
         });
 
         tP.regular += pv['regular']; tP.dpd130 += pv['1-30-dpd']; tP.dpd3160 += pv['31-60-dpd']; tP.dpd6190 += pv['61-90-dpd']; tP.npa += pv['npa'];
@@ -1463,13 +1460,13 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
         const rowAchTotal = av['regular'] + av['1-30-dpd'] + av['31-60-dpd'] + av['61-90-dpd'] + av['npa'];
         if (rowPlanTotal > 0) { achPctSum += (rowAchTotal / rowPlanTotal) * 100; achPctCount++; }
 
-        const cell = (color, val) => `<td style="background:${color};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:11px">${fmt(val)}</td>`;
+        const ac = (color, acc, amt) => `<td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:left;font-size:10px">${acc}</td><td style="background:${color};border:1px solid ${C.border};padding:4px 6px;text-align:right;font-size:10px">${fmt(amt)}</td>`;
 
         bodyRows += `<tr style="background:${bg}">
             <td style="background:${bg};border:1px solid ${C.border};padding:4px 8px;text-align:left;font-weight:600;font-size:11px">${row.name}</td>
-            ${cell(C.ftod, pv['regular'])}${cell(C.slipped, pv['1-30-dpd'])}${cell(C.slipped, pv['31-60-dpd'])}${cell(C.pnpa, pv['61-90-dpd'])}${cell(C.npa, pv['npa'])}
+            ${ac(C.ftod, pa['regular'], pv['regular'])}${ac(C.slipped, pa['1-30-dpd'], pv['1-30-dpd'])}${ac(C.slipped, pa['31-60-dpd'], pv['31-60-dpd'])}${ac(C.pnpa, pa['61-90-dpd'], pv['61-90-dpd'])}${ac(C.npa, pa['npa'], pv['npa'])}
             <td style="background:#000;width:2px;padding:0"></td>
-            ${cell(C.ftod, av['regular'])}${cell(C.slipped, av['1-30-dpd'])}${cell(C.slipped, av['31-60-dpd'])}${cell(C.pnpa, av['61-90-dpd'])}${cell(C.npa, av['npa'])}
+            ${ac(C.ftod, aa['regular'], av['regular'])}${ac(C.slipped, aa['1-30-dpd'], av['1-30-dpd'])}${ac(C.slipped, aa['31-60-dpd'], av['31-60-dpd'])}${ac(C.pnpa, aa['61-90-dpd'], av['61-90-dpd'])}${ac(C.npa, aa['npa'], av['npa'])}
         </tr>`;
     });
 
@@ -1505,42 +1502,33 @@ function generateCombinedReportHTML(title, level, planRows, achRows) {
             </div>
         </div>`;
 
-    // Category headers (repeated for plan + achievement)
-    const catHeaders = `
-        <td style="background:${C.ftod};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:9px;font-weight:bold">Regular</td>
-        <td style="background:${C.slipped};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:9px;font-weight:bold">1-30 DPD</td>
-        <td style="background:${C.slipped};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:9px;font-weight:bold">31-60 DPD</td>
-        <td style="background:${C.pnpa};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:9px;font-weight:bold">61-90 DPD</td>
-        <td style="background:${C.npa};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:9px;font-weight:bold">NPA</td>`;
+    // Category headers with colspan=2 for Account + Amount
+    const catH = (color, label) => `<td colspan="2" style="background:${color};border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:9px;font-weight:bold">${label}</td>`;
+    const catHeaders = `${catH(C.ftod,'Regular')}${catH(C.slipped,'1-30 DPD')}${catH(C.slipped,'31-60 DPD')}${catH(C.pnpa,'61-90 DPD')}${catH(C.npa,'NPA')}`;
 
-    const subHeaders = `
-        <td style="background:${C.ftod};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px">Amount</td>
-        <td style="background:${C.slipped};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px">Amount</td>
-        <td style="background:${C.slipped};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px">Amount</td>
-        <td style="background:${C.pnpa};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px">Amount</td>
-        <td style="background:${C.npa};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px">Amount</td>`;
+    const subH = (color) => `<td style="background:${color};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Account</td><td style="background:${color};border:1px solid ${C.border};padding:3px 6px;text-align:center;font-size:8px;font-weight:bold">Amount</td>`;
+    const subHeaders = `${subH(C.ftod)}${subH(C.slipped)}${subH(C.slipped)}${subH(C.pnpa)}${subH(C.npa)}`;
 
-    const tc = (val) => `<td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:center;font-size:11px">${fmt(val)}</td>`;
+    const tc = val => `<td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px;text-align:center;font-size:10px">${fmt(val)}</td>`;
+    const te = `<td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 6px"></td>`;
 
     const totalRow = `<tr style="font-weight:bold;background:#FFFF00">
         <td style="background:#FFFF00;border:1px solid ${C.border};padding:4px 8px;text-align:left;font-size:11px">Grand Total</td>
-        ${tc(tP.regular)}${tc(tP.dpd130)}${tc(tP.dpd3160)}${tc(tP.dpd6190)}${tc(tP.npa)}
+        ${te}${tc(tP.regular)}${te}${tc(tP.dpd130)}${te}${tc(tP.dpd3160)}${te}${tc(tP.dpd6190)}${te}${tc(tP.npa)}
         <td style="background:#000;width:2px;padding:0"></td>
-        ${tc(tA.regular)}${tc(tA.dpd130)}${tc(tA.dpd3160)}${tc(tA.dpd6190)}${tc(tA.npa)}
+        ${te}${tc(tA.regular)}${te}${tc(tA.dpd130)}${te}${tc(tA.dpd3160)}${te}${tc(tA.dpd6190)}${te}${tc(tA.npa)}
     </tr>`;
 
     return `
         <div style="background:white;padding:20px;font-family:Arial,sans-serif">
-            <div style="text-align:center;font-weight:bold;font-size:18px;padding:12px;margin-bottom:20px">
-                ${title}
-            </div>
+            <div style="text-align:center;font-weight:bold;font-size:18px;padding:12px;margin-bottom:20px">${title}</div>
             ${summaryHTML}
             <table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:11px;width:100%;background:white">
                 <tr style="font-weight:bold;font-size:11px">
                     <td rowspan="3" style="background:#fff;border:1px solid ${C.border};padding:4px 8px;text-align:center;vertical-align:middle;width:140px">${firstCol}</td>
-                    <td colspan="5" style="background:${C.planBg};border:1px solid ${C.border};padding:6px;text-align:center;border-bottom:2px solid ${C.border};font-weight:bold">PLAN</td>
+                    <td colspan="10" style="background:${C.planBg};border:1px solid ${C.border};padding:6px;text-align:center;border-bottom:2px solid ${C.border};font-weight:bold">PLAN</td>
                     <td rowspan="3" style="background:#000;width:2px"></td>
-                    <td colspan="5" style="background:${C.achBg};border:1px solid ${C.border};padding:6px;text-align:center;border-bottom:2px solid ${C.border};font-weight:bold">ACHIEVEMENT</td>
+                    <td colspan="10" style="background:${C.achBg};border:1px solid ${C.border};padding:6px;text-align:center;border-bottom:2px solid ${C.border};font-weight:bold">ACHIEVEMENT</td>
                 </tr>
                 <tr style="font-weight:bold">${catHeaders}${catHeaders}</tr>
                 <tr style="font-weight:bold">${subHeaders}${subHeaders}</tr>
