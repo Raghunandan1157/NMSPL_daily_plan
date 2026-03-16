@@ -1,0 +1,29 @@
+{
+  "name": "NMSPL Daily Plan",
+  "short_name": "NMSPL",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f0f2f8",
+  "theme_color": "#4a5fc1",
+  "description": "NMSPL Daily Plan management application",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

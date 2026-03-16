@@ -637,9 +637,145 @@
         @media (max-width: 400px) {
             .dashboard-grid { grid-template-columns: 1fr; }
         }
+
+        /* ===== GLOBAL LOADER ===== */
+        .global-loader {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 30000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 16px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .global-loader.visible { opacity: 1; pointer-events: all; }
+        .loader-spinner {
+            width: 48px; height: 48px;
+            border: 4px solid #fff;
+            border-top-color: #4a5fc1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .loader-text { color: #fff; font-size: 14px; font-weight: 500; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== DATE PICKER ===== */
+        .date-picker-row {
+            display: flex; gap: 8px; align-items: center;
+            margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .date-quick-btn {
+            padding: 8px 16px; border-radius: 10px;
+            border: 1.5px solid #e8eaf0; background: #fff;
+            font-size: 13px; font-weight: 600; color: #888;
+            cursor: pointer; transition: 0.2s;
+        }
+        .date-quick-btn:hover { border-color: #4a5fc1; color: #4a5fc1; }
+        .date-quick-btn.active { background: #4a5fc1; border-color: #4a5fc1; color: #fff; }
+        .date-input {
+            padding: 8px 14px; border-radius: 10px;
+            border: 1.5px solid #e8eaf0; font-size: 13px;
+            color: #333; outline: none;
+        }
+        .date-input:focus { border-color: #4a5fc1; }
+        .date-range-sep { color: #aaa; font-size: 13px; }
+
+        /* ===== ENHANCED DASHBOARD ===== */
+        .dash-section { margin-bottom: 28px; }
+        .dash-section-title {
+            font-size: 15px; font-weight: 700; color: #333;
+            margin-bottom: 14px; display: flex;
+            align-items: center; gap: 8px;
+        }
+        .dash-section-title .dst-badge {
+            font-size: 11px; font-weight: 600;
+            padding: 3px 10px; border-radius: 12px;
+            background: #eef1ff; color: #4a5fc1;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+        }
+        .kpi-card {
+            background: #fff; border-radius: 14px;
+            padding: 20px; box-shadow: 0 2px 10px rgba(74,95,193,0.06);
+            position: relative; overflow: hidden;
+        }
+        .kpi-card .kpi-accent {
+            position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; border-radius: 14px 0 0 14px;
+        }
+        .kpi-card .kpi-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #999; margin-bottom: 8px;
+        }
+        .kpi-card .kpi-value { font-size: 28px; font-weight: 800; color: #333; }
+        .kpi-card .kpi-sub { font-size: 12px; color: #999; margin-top: 4px; }
+
+        /* Portfolio health bar */
+        .health-bar-wrap { margin-top: 12px; }
+        .health-bar {
+            height: 10px; background: #f0f1f5; border-radius: 5px;
+            overflow: hidden; display: flex;
+        }
+        .health-bar .hb-seg { height: 100%; transition: width 0.5s; }
+        .health-legend {
+            display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap;
+        }
+        .health-legend-item {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 11px; color: #666;
+        }
+        .health-legend-item .hl-dot {
+            width: 10px; height: 10px; border-radius: 3px;
+        }
+
+        /* Regional table */
+        .region-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 13px; background: #fff;
+            border-radius: 12px; overflow: hidden;
+        }
+        .region-table thead { background: #f8f9fd; }
+        .region-table th {
+            padding: 12px 16px; text-align: left;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #888; border-bottom: 2px solid #e8eaf0;
+        }
+        .region-table td {
+            padding: 12px 16px; border-bottom: 1px solid #f2f3f7;
+        }
+        .region-table tr:hover td { background: #fafbff; }
+        .region-table .rt-pct {
+            font-weight: 700; display: inline-block;
+            padding: 2px 10px; border-radius: 10px; font-size: 12px;
+        }
+        .rt-pct.high { background: #e8f9ef; color: #34c77b; }
+        .rt-pct.mid { background: #fff3e0; color: #e88a3a; }
+        .rt-pct.low { background: #ffeef0; color: #e74c5e; }
+
+        @media (max-width: 768px) {
+            .kpi-grid { grid-template-columns: 1fr 1fr; }
+            .kpi-card .kpi-value { font-size: 22px; }
+            .date-picker-row { gap: 6px; }
+        }
     </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a5fc1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
+
+<!-- GLOBAL LOADER -->
+<div class="global-loader" id="globalLoader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Loading...</div>
+</div>
 
 <!-- ==================== LOGIN SCREEN ==================== -->
 <div class="login-screen" id="loginScreen">
@@ -738,10 +874,38 @@
             <!-- Dashboard -->
             <div class="tab-content active" id="mtab-dashboard">
                 <div class="page-header">Dashboard</div>
-                <div class="dashboard-grid" id="dashStats"></div>
 
-                <div class="chart-section">
-                    <div class="chart-title">Plan vs Achievement by Bank</div>
+                <!-- Date Picker -->
+                <div class="date-picker-row" id="dashDatePicker">
+                    <button class="date-quick-btn" onclick="setDashDate('yesterday')">Yesterday</button>
+                    <button class="date-quick-btn active" onclick="setDashDate('today')">Today</button>
+                    <button class="date-quick-btn" onclick="setDashDate('tomorrow')">Tomorrow</button>
+                    <input type="date" class="date-input" id="dashDateInput" onchange="setDashDateCustom(this.value)">
+                    <span class="date-range-sep">to</span>
+                    <input type="date" class="date-input" id="dashDateTo" onchange="setDashDateRange()">
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="dash-section">
+                    <div class="dash-section-title">Key Metrics</div>
+                    <div class="kpi-grid" id="kpiGrid"></div>
+                </div>
+
+                <!-- Portfolio Health -->
+                <div class="dash-section">
+                    <div class="dash-section-title">Portfolio Health</div>
+                    <div class="chart-card" id="portfolioHealth"></div>
+                </div>
+
+                <!-- Regional Breakdown -->
+                <div class="dash-section">
+                    <div class="dash-section-title">Regional Breakdown <span class="dst-badge" id="dashLevelBadge">Region</span></div>
+                    <div class="chart-card" style="padding:0;overflow:hidden" id="regionalTable"></div>
+                </div>
+
+                <!-- Charts -->
+                <div class="dash-section">
+                    <div class="dash-section-title">Plan vs Achievement by Bank</div>
                     <div class="chart-card">
                         <div class="bar-chart" id="bankBarChart"></div>
                         <div class="chart-legend">
@@ -751,8 +915,8 @@
                     </div>
                 </div>
 
-                <div class="chart-section">
-                    <div class="chart-title">Achievement % by Category</div>
+                <div class="dash-section">
+                    <div class="dash-section-title">Category Breakdown</div>
                     <div class="chart-card">
                         <div class="bar-chart" id="catBarChart"></div>
                         <div class="chart-legend">
@@ -762,8 +926,8 @@
                     </div>
                 </div>
 
-                <div class="chart-section">
-                    <div class="chart-title">Bank-wise Achievement Rate</div>
+                <div class="dash-section">
+                    <div class="dash-section-title">Bank-wise Achievement Rate</div>
                     <div class="chart-card">
                         <div class="donut-row" id="donutRow"></div>
                     </div>
@@ -822,8 +986,11 @@
         <div class="modal-footer">
             <div class="mf-info" id="reportInfo"></div>
             <div class="mf-actions">
-                <button class="mf-btn" onclick="copyReportToClipboard()">Copy</button>
-                <button class="mf-btn" onclick="exportReportCSV()">Excel CSV</button>
+                <button class="mf-btn" onclick="copyReportAsImage()">Copy Image</button>
+                <button class="mf-btn" onclick="shareReport()">Share</button>
+                <button class="mf-btn" onclick="downloadExcel()">Excel</button>
+                <button class="mf-btn" onclick="exportReportCSV()">CSV</button>
+                <button class="mf-btn" onclick="openReportInNewTab()">New Tab</button>
                 <button class="mf-btn" onclick="window.print()">Print</button>
             </div>
         </div>
@@ -1186,14 +1353,79 @@ function switchMonitorTab(tab) {
     if (tab === 'reports') renderReports();
 }
 
+// ── Dashboard Date ──
+let dashDateFrom = new Date().toISOString().split('T')[0];
+let dashDateTo = '';
+
+function setDashDate(preset) {
+    const now = new Date();
+    let d = new Date();
+    if (preset === 'yesterday') d.setDate(now.getDate() - 1);
+    else if (preset === 'tomorrow') d.setDate(now.getDate() + 1);
+    dashDateFrom = d.toISOString().split('T')[0];
+    dashDateTo = '';
+    document.getElementById('dashDateInput').value = dashDateFrom;
+    document.getElementById('dashDateTo').value = '';
+    document.querySelectorAll('.date-quick-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderDashboard();
+}
+
+function setDashDateCustom(val) {
+    dashDateFrom = val;
+    dashDateTo = '';
+    document.querySelectorAll('.date-quick-btn').forEach(b => b.classList.remove('active'));
+    renderDashboard();
+}
+
+function setDashDateRange() {
+    dashDateTo = document.getElementById('dashDateTo').value;
+    document.querySelectorAll('.date-quick-btn').forEach(b => b.classList.remove('active'));
+    renderDashboard();
+}
+
+function loadDataForDateRange() {
+    // Aggregate data across date range
+    const allData = {};
+    const from = new Date(dashDateFrom);
+    const to = dashDateTo ? new Date(dashDateTo) : from;
+    for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
+        const key = 'nmspl_' + d.toISOString().split('T')[0];
+        const dayData = JSON.parse(localStorage.getItem(key) || '{}');
+        BANKS.forEach(b => {
+            if (!allData[b]) allData[b] = {};
+            if (dayData[b]) {
+                CATEGORIES.forEach(c => {
+                    if (!allData[b][c]) allData[b][c] = { planAmount: '0', achAmount: '0', planAccount: '', achAccount: '' };
+                    const entry = dayData[b][c] || {};
+                    const prevP = parseFloat(allData[b][c].planAmount.replace(/,/g, '')) || 0;
+                    const prevA = parseFloat(allData[b][c].achAmount.replace(/,/g, '')) || 0;
+                    const newP = parseFloat((entry.planAmount || '0').replace(/,/g, '')) || 0;
+                    const newA = parseFloat((entry.achAmount || '0').replace(/,/g, '')) || 0;
+                    allData[b][c].planAmount = String(prevP + newP);
+                    allData[b][c].achAmount = String(prevA + newA);
+                    if (entry.planAccount) allData[b][c].planAccount = entry.planAccount;
+                    if (entry.achAccount) allData[b][c].achAccount = entry.achAccount;
+                });
+            }
+        });
+    }
+    return allData;
+}
+
 function renderDashboard() {
-    const d = loadAll();
-    let totalPlan = 0, totalAch = 0, filledCount = 0;
+    const d = loadDataForDateRange();
+    let totalPlan = 0, totalAch = 0, filledCount = 0, totalAccounts = 0;
     const bankTotals = {};
     const catTotals = {};
+    const regionTotals = {};
 
     BANKS.forEach(b => {
         bankTotals[b] = { plan: 0, ach: 0 };
+        const hier = DEMO_HIERARCHY[b] || { region: '-' };
+        if (!regionTotals[hier.region]) regionTotals[hier.region] = { plan: 0, ach: 0, banks: [] };
+        if (!regionTotals[hier.region].banks.includes(BANK_LABELS[b])) regionTotals[hier.region].banks.push(BANK_LABELS[b]);
+
         CATEGORIES.forEach(c => {
             if (!catTotals[c]) catTotals[c] = { plan: 0, ach: 0 };
             const entry = (d[b] || {})[c] || {};
@@ -1205,32 +1437,60 @@ function renderDashboard() {
             bankTotals[b].ach += a;
             catTotals[c].plan += p;
             catTotals[c].ach += a;
-            if (entry.planAccount || entry.achAccount) filledCount++;
+            regionTotals[hier.region].plan += p;
+            regionTotals[hier.region].ach += a;
+            if (entry.planAccount) { filledCount++; totalAccounts++; }
         });
     });
 
     const overallPct = totalPlan > 0 ? Math.round((totalAch / totalPlan) * 100) : 0;
+    const gap = totalPlan - totalAch;
+    const pctColor = overallPct >= 80 ? '#34c77b' : overallPct >= 50 ? '#e88a3a' : '#e74c5e';
 
-    // Stats
-    document.getElementById('dashStats').innerHTML = `
-        <div class="stat-card"><div class="sc-label">Total Plan</div><div class="sc-value">${formatNum(totalPlan)}</div></div>
-        <div class="stat-card"><div class="sc-label">Total Achievement</div><div class="sc-value" style="color:#34c77b">${formatNum(totalAch)}</div></div>
-        <div class="stat-card"><div class="sc-label">Achievement %</div><div class="sc-value" style="color:${overallPct >= 80 ? '#34c77b' : overallPct >= 50 ? '#e88a3a' : '#e74c5e'}">${overallPct}%</div></div>
-        <div class="stat-card"><div class="sc-label">Entries</div><div class="sc-value">${filledCount}</div><div class="sc-sub">of ${BANKS.length * CATEGORIES.length} total</div></div>
+    // Set date input
+    document.getElementById('dashDateInput').value = dashDateFrom;
+
+    // KPI Cards
+    document.getElementById('kpiGrid').innerHTML = `
+        <div class="kpi-card"><div class="kpi-accent" style="background:#4a5fc1"></div><div class="kpi-label">Total Plan</div><div class="kpi-value">${formatNum(totalPlan)}</div><div class="kpi-sub">${totalAccounts} accounts</div></div>
+        <div class="kpi-card"><div class="kpi-accent" style="background:#34c77b"></div><div class="kpi-label">Total Achievement</div><div class="kpi-value" style="color:#34c77b">${formatNum(totalAch)}</div><div class="kpi-sub">${overallPct}% of plan</div></div>
+        <div class="kpi-card"><div class="kpi-accent" style="background:${pctColor}"></div><div class="kpi-label">Achievement %</div><div class="kpi-value" style="color:${pctColor}">${overallPct}%</div><div class="kpi-sub">${overallPct >= 80 ? 'On Track' : overallPct >= 50 ? 'Needs Attention' : 'Critical'}</div></div>
+        <div class="kpi-card"><div class="kpi-accent" style="background:${gap > 0 ? '#e74c5e' : '#34c77b'}"></div><div class="kpi-label">Gap</div><div class="kpi-value" style="color:${gap > 0 ? '#e74c5e' : '#34c77b'}">${formatNum(gap)}</div><div class="kpi-sub">Plan - Achievement</div></div>
     `;
+
+    // Portfolio Health
+    const catPcts = CATEGORIES.map(c => {
+        const p = catTotals[c].plan;
+        return { cat: CAT_LABELS[c], plan: p, ach: catTotals[c].ach, pct: p > 0 ? Math.round((catTotals[c].ach / p) * 100) : 0 };
+    });
+    const colors = ['#34c77b', '#4a5fc1', '#e88a3a', '#e74c5e', '#7c4dff'];
+    const totalForBar = catPcts.reduce((s, c) => s + c.plan, 0) || 1;
+
+    document.getElementById('portfolioHealth').innerHTML = `
+        <div class="health-bar-wrap">
+            <div class="health-bar">${catPcts.map((c, i) => `<div class="hb-seg" style="width:${(c.plan / totalForBar * 100)}%;background:${colors[i]}"></div>`).join('')}</div>
+            <div class="health-legend">${catPcts.map((c, i) => `<div class="health-legend-item"><div class="hl-dot" style="background:${colors[i]}"></div>${c.cat}: ${c.pct}%</div>`).join('')}</div>
+        </div>
+    `;
+
+    // Regional Table
+    const regKeys = Object.keys(regionTotals);
+    document.getElementById('regionalTable').innerHTML = `<table class="region-table">
+        <thead><tr><th>Region</th><th>Banks</th><th>Plan</th><th>Achievement</th><th>%</th></tr></thead>
+        <tbody>${regKeys.map(r => {
+            const rt = regionTotals[r];
+            const pct = rt.plan > 0 ? Math.round((rt.ach / rt.plan) * 100) : 0;
+            const cls = pct >= 80 ? 'high' : pct >= 50 ? 'mid' : 'low';
+            return `<tr><td style="font-weight:700">${r}</td><td>${rt.banks.join(', ')}</td><td>${formatNum(rt.plan)}</td><td>${formatNum(rt.ach)}</td><td><span class="rt-pct ${cls}">${pct}%</span></td></tr>`;
+        }).join('')}</tbody>
+    </table>`;
 
     // Bank bar chart
     const maxBank = Math.max(...BANKS.map(b => Math.max(bankTotals[b].plan, bankTotals[b].ach, 1)));
     document.getElementById('bankBarChart').innerHTML = BANKS.map(b => {
         const ph = Math.max((bankTotals[b].plan / maxBank) * 180, 4);
         const ah = Math.max((bankTotals[b].ach / maxBank) * 180, 4);
-        return `<div class="bar-group">
-            <div class="bar-pair">
-                <div class="bar plan-bar" style="height:${ph}px" title="Plan: ${formatNum(bankTotals[b].plan)}"></div>
-                <div class="bar ach-bar" style="height:${ah}px" title="Ach: ${formatNum(bankTotals[b].ach)}"></div>
-            </div>
-            <div class="bar-label">${BANK_LABELS[b]}</div>
-        </div>`;
+        return `<div class="bar-group"><div class="bar-pair"><div class="bar plan-bar" style="height:${ph}px" title="Plan: ${formatNum(bankTotals[b].plan)}"></div><div class="bar ach-bar" style="height:${ah}px" title="Ach: ${formatNum(bankTotals[b].ach)}"></div></div><div class="bar-label">${BANK_LABELS[b]}</div></div>`;
     }).join('');
 
     // Category bar chart
@@ -1238,13 +1498,7 @@ function renderDashboard() {
     document.getElementById('catBarChart').innerHTML = CATEGORIES.map(c => {
         const ph = Math.max((catTotals[c].plan / maxCat) * 180, 4);
         const ah = Math.max((catTotals[c].ach / maxCat) * 180, 4);
-        return `<div class="bar-group">
-            <div class="bar-pair">
-                <div class="bar plan-bar" style="height:${ph}px"></div>
-                <div class="bar ach-bar" style="height:${ah}px"></div>
-            </div>
-            <div class="bar-label">${CAT_LABELS[c]}</div>
-        </div>`;
+        return `<div class="bar-group"><div class="bar-pair"><div class="bar plan-bar" style="height:${ph}px"></div><div class="bar ach-bar" style="height:${ah}px"></div></div><div class="bar-label">${CAT_LABELS[c]}</div></div>`;
     }).join('');
 
     // Donut circles
@@ -1252,12 +1506,7 @@ function renderDashboard() {
         const pct = bankTotals[b].plan > 0 ? Math.round((bankTotals[b].ach / bankTotals[b].plan) * 100) : 0;
         const color = pct >= 80 ? '#34c77b' : pct >= 50 ? '#e88a3a' : '#e74c5e';
         const bg = `conic-gradient(${color} ${pct * 3.6}deg, #f0f1f5 ${pct * 3.6}deg)`;
-        return `<div class="donut-item">
-            <div class="donut-circle" style="background:${bg}">
-                <span style="background:#fff;width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:${color}">${pct}%</span>
-            </div>
-            <div class="di-label">${BANK_LABELS[b]}</div>
-        </div>`;
+        return `<div class="donut-item"><div class="donut-circle" style="background:${bg}"><span style="background:#fff;width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:${color}">${pct}%</span></div><div class="di-label">${BANK_LABELS[b]}</div></div>`;
     }).join('');
 }
 
@@ -1594,6 +1843,129 @@ document.getElementById('reportModal').addEventListener('click', e => { if (e.ta
 
 function renderReports() { /* Reports are modal-based */ }
 
+// ════════════════════════════════════════
+// LOADING SPINNER
+// ════════════════════════════════════════
+function setLoading(show, message = 'Loading...') {
+    const loader = document.getElementById('globalLoader');
+    if (loader) {
+        loader.querySelector('.loader-text').textContent = message;
+        show ? loader.classList.add('visible') : loader.classList.remove('visible');
+    }
+}
+
+// ════════════════════════════════════════
+// DYNAMIC SCRIPT LOADER
+// ════════════════════════════════════════
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${url}"]`)) return resolve();
+        const s = document.createElement('script');
+        s.src = url;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
+// ════════════════════════════════════════
+// EXCEL EXPORT (SheetJS)
+// ════════════════════════════════════════
+async function downloadExcel() {
+    const table = document.querySelector('#reportPreviewBody table');
+    if (!table) { showToast('No report table found'); return; }
+    try {
+        setLoading(true, 'Preparing Excel...');
+        await loadScript('https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js');
+        const wb = XLSX.utils.table_to_book(table, { sheet: 'Report' });
+        XLSX.writeFile(wb, `nmspl_${currentReportType}_report.xlsx`);
+        setLoading(false);
+        showToast('Excel downloaded');
+    } catch (e) {
+        setLoading(false);
+        console.error('Excel export failed:', e);
+        showToast('Excel export failed');
+    }
+}
+
+// ════════════════════════════════════════
+// COPY AS IMAGE (html2canvas)
+// ════════════════════════════════════════
+async function generateReportImageBlob() {
+    const body = document.getElementById('reportPreviewBody');
+    const container = document.createElement('div');
+    container.style.cssText = 'position:fixed;left:-9999px;top:0;background:white;padding:20px;z-index:9999';
+    container.innerHTML = '<div style="display:inline-block;width:max-content;background:white">' + body.innerHTML + '</div>';
+    document.body.appendChild(container);
+    try {
+        await new Promise(r => setTimeout(r, 150));
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+        const canvas = await html2canvas(container.firstElementChild, {
+            backgroundColor: '#ffffff', scale: /Mobi/.test(navigator.userAgent) ? 1.5 : 2,
+            logging: false, useCORS: true, allowTaint: true
+        });
+        document.body.removeChild(container);
+        return new Promise(r => canvas.toBlob(r, 'image/png'));
+    } catch (e) {
+        if (document.body.contains(container)) document.body.removeChild(container);
+        return null;
+    }
+}
+
+async function copyReportAsImage() {
+    setLoading(true, 'Generating image...');
+    const blob = await generateReportImageBlob();
+    setLoading(false);
+    if (!blob) { copyReportToClipboard(); return; }
+    try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        showToast('Image copied to clipboard');
+    } catch (e) {
+        // Mobile fallback: download image
+        if (/Mobi/.test(navigator.userAgent)) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'report_' + Date.now() + '.png';
+            a.click(); URL.revokeObjectURL(url);
+            showToast('Image downloaded');
+        } else {
+            copyReportToClipboard();
+        }
+    }
+}
+
+// ════════════════════════════════════════
+// SHARE (Web Share API)
+// ════════════════════════════════════════
+async function shareReport() {
+    if (!navigator.canShare) { showToast('Sharing not supported'); return; }
+    setLoading(true, 'Generating image...');
+    const blob = await generateReportImageBlob();
+    setLoading(false);
+    if (!blob) { showToast('Failed to generate image'); return; }
+    try {
+        const file = new File([blob], 'nmspl_report.png', { type: 'image/png' });
+        const shareData = { files: [file], title: 'NMSPL Daily Report', text: 'Daily collection report' };
+        if (navigator.canShare(shareData)) {
+            await navigator.share(shareData);
+            showToast('Shared successfully');
+        } else { showToast('Device does not support image sharing'); }
+    } catch (e) {
+        if (e.name !== 'AbortError') showToast('Share failed');
+    }
+}
+
+// ════════════════════════════════════════
+// OPEN IN NEW TAB
+// ════════════════════════════════════════
+function openReportInNewTab() {
+    const body = document.getElementById('reportPreviewBody');
+    if (!body) return;
+    const html = `<!DOCTYPE html><html><head><title>NMSPL Report</title><style>body{margin:20px;font-family:Arial,sans-serif;background:white}table{border-collapse:collapse;width:100%}</style></head><body>${body.innerHTML}</body></html>`;
+    const blob = new Blob([html], { type: 'text/html' });
+    window.open(URL.createObjectURL(blob), '_blank');
+}
+
 // ── Helpers ──
 function formatNum(n) {
     if (n === 0) return '0';
@@ -1658,6 +2030,11 @@ function loadDemoData() {
         loadDemoData();
     }
 })();
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
