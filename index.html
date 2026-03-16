@@ -758,10 +758,98 @@
         .rt-pct.mid { background: #fff3e0; color: #e88a3a; }
         .rt-pct.low { background: #ffeef0; color: #e74c5e; }
 
+        /* ===== STAFF SELECTOR ===== */
+        .staff-selector {
+            background: #fff; border-radius: 14px;
+            padding: 20px 24px; margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(74,95,193,0.06);
+            max-width: 700px;
+        }
+        .staff-selector .ss-label {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #999; margin-bottom: 8px;
+        }
+        .staff-select {
+            width: 100%; padding: 12px 14px;
+            border: 1.5px solid #dde0ea; border-radius: 10px;
+            font-size: 14px; color: #333; background: #fafbff;
+            outline: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+        .staff-select:focus { border-color: #4a5fc1; }
+        .staff-info {
+            display: flex; gap: 16px; margin-top: 10px;
+            font-size: 13px; color: #888; flex-wrap: wrap;
+        }
+        .staff-info strong { color: #555; }
+
+        /* ===== TABLE-STYLE DATA ENTRY ===== */
+        .entry-table-wrap {
+            background: #fff; border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(74,95,193,0.06);
+            overflow: hidden; max-width: 700px;
+            margin-bottom: 24px;
+        }
+        .entry-table {
+            width: 100%; border-collapse: collapse;
+        }
+        .entry-table thead { background: #f8f9fd; }
+        .entry-table th {
+            padding: 12px 14px; text-align: center;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #888; border-bottom: 2px solid #e8eaf0;
+        }
+        .entry-table th:first-child { text-align: left; }
+        .entry-table td {
+            padding: 10px 12px; border-bottom: 1px solid #f2f3f7;
+            vertical-align: middle;
+        }
+        .entry-table td:first-child {
+            font-weight: 600; font-size: 13px; color: #333;
+            white-space: nowrap;
+        }
+        .entry-table .cat-dot {
+            display: inline-block; width: 8px; height: 8px;
+            border-radius: 50%; margin-right: 8px;
+        }
+        .entry-table input {
+            width: 100%; padding: 10px 12px;
+            border: 1.5px solid #eef0f5; border-radius: 8px;
+            font-size: 14px; color: #333; background: #fafbff;
+            outline: none; text-align: center; min-width: 80px;
+        }
+        .entry-table input:focus {
+            border-color: #4a5fc1;
+            box-shadow: 0 0 0 2px rgba(74,95,193,0.1);
+        }
+        .entry-table input:disabled {
+            background: #f0f1f5; color: #999;
+        }
+        .entry-table input.ach-input {
+            border-color: #c8e6c9; background: #f0fdf4;
+        }
+        .entry-table input.ach-input:focus {
+            border-color: #34c77b;
+            box-shadow: 0 0 0 2px rgba(52,199,123,0.1);
+        }
+        .entry-table .total-row td {
+            font-weight: 800; background: #f8f9fd;
+            border-top: 2px solid #e8eaf0; color: #4a5fc1;
+            text-align: center; font-size: 14px;
+        }
+        .entry-table .total-row td:first-child { text-align: left; }
+
+        .entry-scroll { overflow-x: auto; }
+
         @media (max-width: 768px) {
             .kpi-grid { grid-template-columns: 1fr 1fr; }
             .kpi-card .kpi-value { font-size: 22px; }
             .date-picker-row { gap: 6px; }
+            .entry-table-wrap { max-width: 100%; }
+            .staff-selector { max-width: 100%; }
         }
     </style>
     <link rel="manifest" href="manifest.json">
@@ -1076,6 +1164,41 @@ function getPhase(bank) {
     return 'plan';
 }
 
+// ── Staff Master Data (hardcoded) ──
+const STAFF_DATA = {
+    sbi: [
+        { id: 'sbi-001', name: 'Rajesh Kumar', designation: 'Field Officer', district: 'Ernakulam', branch: 'SBI Kochi Main' },
+        { id: 'sbi-002', name: 'Meena Devi', designation: 'Senior Recovery Agent', district: 'Ernakulam', branch: 'SBI Kochi Main' },
+        { id: 'sbi-003', name: 'Suresh Patel', designation: 'Collection Executive', district: 'Ernakulam', branch: 'SBI Fort Kochi' },
+        { id: 'sbi-004', name: 'Anita Sharma', designation: 'Field Officer', district: 'Ernakulam', branch: 'SBI Edappally' },
+        { id: 'sbi-005', name: 'Vikram Singh', designation: 'NPA Recovery Officer', district: 'Ernakulam', branch: 'SBI Kochi Main' }
+    ],
+    csb: [
+        { id: 'csb-001', name: 'Priya Nair', designation: 'Field Officer', district: 'Thrissur', branch: 'CSB Thrissur HO' },
+        { id: 'csb-002', name: 'Arun Menon', designation: 'Collection Executive', district: 'Thrissur', branch: 'CSB Thrissur HO' },
+        { id: 'csb-003', name: 'Lakshmi Iyer', designation: 'Senior Recovery Agent', district: 'Thrissur', branch: 'CSB Guruvayur' },
+        { id: 'csb-004', name: 'George Thomas', designation: 'Field Officer', district: 'Thrissur', branch: 'CSB Irinjalakuda' },
+        { id: 'csb-005', name: 'Deepa Pillai', designation: 'NPA Recovery Officer', district: 'Thrissur', branch: 'CSB Thrissur HO' }
+    ],
+    own: [
+        { id: 'own-001', name: 'Mohan Das', designation: 'Branch Manager', district: 'Palakkad', branch: 'NMSPL Palakkad' },
+        { id: 'own-002', name: 'Fatima Begum', designation: 'Collection Executive', district: 'Palakkad', branch: 'NMSPL Palakkad' },
+        { id: 'own-003', name: 'Ramesh Yadav', designation: 'Field Officer', district: 'Palakkad', branch: 'NMSPL Ottapalam' },
+        { id: 'own-004', name: 'Sunita Mishra', designation: 'Senior Recovery Agent', district: 'Palakkad', branch: 'NMSPL Palakkad' },
+        { id: 'own-005', name: 'Kamal Joshi', designation: 'NPA Recovery Officer', district: 'Palakkad', branch: 'NMSPL Shoranur' }
+    ]
+};
+
+const CAT_COLORS = {
+    'regular': '#34c77b',
+    '1-30-dpd': '#4a5fc1',
+    '31-60-dpd': '#e88a3a',
+    '61-90-dpd': '#e74c5e',
+    'npa': '#a83242'
+};
+
+let selectedStaff = {};
+
 function buildEntryTabs() {
     const main = document.getElementById('entryMain');
     let html = '';
@@ -1084,47 +1207,32 @@ function buildEntryTabs() {
         const phase = getPhase(bank);
         const d = loadAll();
         const bd = d[bank] || {};
+        const staffList = STAFF_DATA[bank] || [];
+        const savedStaffId = bd._staffId || '';
 
         html += `<div class="tab-content" id="etab-${bank}">`;
-        html += `<div class="page-header">Portfolio Overview <span class="bank-tag">${BANK_LABELS[bank]}</span> `;
-        html += getPhaseTag(phase);
-        html += `</div>`;
+        html += `<div class="page-header">Daily Plan <span class="bank-tag">${BANK_LABELS[bank]}</span> ${getPhaseTag(phase)}</div>`;
 
-        CATEGORIES.forEach(cat => {
-            const plan = (bd[cat] || {});
-            html += `<div class="card" id="card-${bank}-${cat}">`;
-            html += `<span class="card-badge">${CAT_LABELS[cat]}</span>`;
+        // Staff Selector
+        html += `<div class="staff-selector">
+            <div class="ss-label">Field Staff</div>
+            <select class="staff-select" id="staff-${bank}" onchange="onStaffChange('${bank}')">
+                <option value="">-- Select Staff --</option>
+                ${staffList.map(s => `<option value="${s.id}" ${s.id === savedStaffId ? 'selected' : ''}>${s.name} - ${s.designation}</option>`).join('')}
+            </select>
+            <div class="staff-info" id="staffInfo-${bank}"></div>
+        </div>`;
 
-            if (phase === 'plan') {
-                html += fieldRow(bank, cat, 'plan', 'Account', 'account', plan.planAccount || '', false);
-                html += fieldRow(bank, cat, 'plan', 'Amount', 'amount', plan.planAmount || '', false);
-            } else if (phase === 'achievement') {
-                html += fieldRow(bank, cat, 'plan', 'Account (Plan)', 'account', plan.planAccount || '', true);
-                html += fieldRow(bank, cat, 'plan', 'Amount (Plan)', 'amount', plan.planAmount || '', true);
-                html += fieldRow(bank, cat, 'ach', 'Account (Achievement)', 'account', plan.achAccount || '', false);
-                html += fieldRow(bank, cat, 'ach', 'Amount (Achievement)', 'amount', plan.achAmount || '', false);
-            } else {
-                // Analytics
-                html += fieldRow(bank, cat, 'plan', 'Account (Plan)', 'account', plan.planAccount || '', true);
-                html += fieldRow(bank, cat, 'plan', 'Amount (Plan)', 'amount', plan.planAmount || '', true);
-                html += fieldRow(bank, cat, 'ach', 'Account (Achievement)', 'account', plan.achAccount || '', true);
-                html += fieldRow(bank, cat, 'ach', 'Amount (Achievement)', 'amount', plan.achAmount || '', true);
-
-                const planAmt = parseFloat((plan.planAmount || '0').replace(/,/g, '')) || 0;
-                const achAmt = parseFloat((plan.achAmount || '0').replace(/,/g, '')) || 0;
-                const pct = planAmt > 0 ? Math.round((achAmt / planAmt) * 100) : 0;
-                const barColor = pct >= 80 ? 'green' : pct >= 50 ? 'yellow' : 'red';
-
-                html += `<div class="analytics-row">
-                    <div class="analytics-item"><div class="ai-label">Plan</div><div class="ai-value plan-v">${formatNum(planAmt)}</div></div>
-                    <div class="analytics-item"><div class="ai-label">Achievement</div><div class="ai-value ach-v">${formatNum(achAmt)}</div></div>
-                    <div class="analytics-item"><div class="ai-label">Achievement %</div><div class="ai-value pct-v">${pct}%</div></div>
-                </div>
-                <div class="progress-bar"><div class="fill ${barColor}" style="width:${Math.min(pct, 100)}%"></div></div>`;
-            }
-
-            html += `</div>`;
-        });
+        // Plan Table
+        if (phase === 'plan') {
+            html += buildEntryTable(bank, 'plan', bd, false);
+        } else if (phase === 'achievement') {
+            html += buildEntryTable(bank, 'plan', bd, true);
+            html += `<div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#34c77b;text-transform:uppercase;letter-spacing:0.5px;max-width:700px">Achievement</div>`;
+            html += buildEntryTable(bank, 'ach', bd, false);
+        } else {
+            html += buildAnalyticsView(bank, bd);
+        }
 
         // Action bar
         html += `<div class="action-bar" id="actions-${bank}">`;
@@ -1151,15 +1259,116 @@ function buildEntryTabs() {
     </div>`;
 
     main.innerHTML = html;
+
+    // Trigger staff info display for pre-selected
+    BANKS.forEach(bank => onStaffChange(bank));
 }
 
-function fieldRow(bank, cat, type, label, field, value, disabled) {
-    const cls = (type === 'ach' && disabled) ? 'field-input achieved' : 'field-input';
+function buildEntryTable(bank, type, bd, disabled) {
+    const prefix = type === 'plan' ? 'plan' : 'ach';
+    const inputCls = type === 'ach' && !disabled ? 'ach-input' : '';
     const dis = disabled ? 'disabled' : '';
-    return `<div class="field-row"><div class="field-group">
-        <div class="field-label">${label}</div>
-        <input type="text" class="${cls}" data-bank="${bank}" data-cat="${cat}" data-type="${type}" data-field="${field}" placeholder="Enter ${field}" value="${esc(value)}" ${dis}>
-    </div></div>`;
+    const label = type === 'plan' ? 'Plan' : 'Achievement';
+
+    let html = `<div class="entry-table-wrap">
+        ${disabled ? '' : `<div style="padding:14px 18px 0;font-size:13px;font-weight:700;color:${type === 'ach' ? '#34c77b' : '#e88a3a'};text-transform:uppercase;letter-spacing:0.5px">${label}</div>`}
+        <div class="entry-scroll"><table class="entry-table">
+        <thead><tr>
+            <th style="width:120px">Category</th>
+            <th>Acc</th>
+            <th>Amount</th>
+        </tr></thead><tbody>`;
+
+    let totalAcc = 0, totalAmt = 0;
+
+    CATEGORIES.forEach(cat => {
+        const entry = bd[cat] || {};
+        const accVal = entry[prefix + 'Account'] || '';
+        const amtVal = entry[prefix + 'Amount'] || '';
+        totalAcc += parseInt(accVal) || 0;
+        totalAmt += parseFloat((amtVal || '0').replace(/,/g, '')) || 0;
+
+        html += `<tr>
+            <td><span class="cat-dot" style="background:${CAT_COLORS[cat]}"></span>${CAT_LABELS[cat]}</td>
+            <td><input type="text" class="${inputCls}" data-bank="${bank}" data-cat="${cat}" data-type="${type}" data-field="account" placeholder="0" value="${esc(accVal)}" ${dis}></td>
+            <td><input type="text" class="${inputCls}" data-bank="${bank}" data-cat="${cat}" data-type="${type}" data-field="amount" placeholder="0" value="${esc(amtVal)}" ${dis}></td>
+        </tr>`;
+    });
+
+    html += `<tr class="total-row">
+        <td>Total</td>
+        <td>${totalAcc || '-'}</td>
+        <td>${totalAmt ? formatNum(totalAmt) : '-'}</td>
+    </tr>`;
+
+    html += `</tbody></table></div></div>`;
+    return html;
+}
+
+function buildAnalyticsView(bank, bd) {
+    let html = `<div class="entry-table-wrap"><div class="entry-scroll"><table class="entry-table">
+        <thead><tr>
+            <th style="width:110px">Category</th>
+            <th colspan="2" style="background:#fff3e0;color:#e88a3a">Plan</th>
+            <th colspan="2" style="background:#e8f9ef;color:#34c77b">Achievement</th>
+            <th style="width:70px">%</th>
+        </tr>
+        <tr>
+            <th></th><th style="background:#fff3e0;color:#e88a3a">Acc</th><th style="background:#fff3e0;color:#e88a3a">Amt</th>
+            <th style="background:#e8f9ef;color:#34c77b">Acc</th><th style="background:#e8f9ef;color:#34c77b">Amt</th><th></th>
+        </tr></thead><tbody>`;
+
+    let tPA = 0, tPAmt = 0, tAA = 0, tAAmt = 0;
+
+    CATEGORIES.forEach(cat => {
+        const entry = bd[cat] || {};
+        const pAcc = entry.planAccount || '0';
+        const pAmt = parseFloat((entry.planAmount || '0').replace(/,/g, '')) || 0;
+        const aAcc = entry.achAccount || '0';
+        const aAmt = parseFloat((entry.achAmount || '0').replace(/,/g, '')) || 0;
+        const pct = pAmt > 0 ? Math.round((aAmt / pAmt) * 100) : 0;
+        const cls = pct >= 80 ? 'high' : pct >= 50 ? 'mid' : 'low';
+
+        tPA += parseInt(pAcc) || 0; tPAmt += pAmt;
+        tAA += parseInt(aAcc) || 0; tAAmt += aAmt;
+
+        html += `<tr>
+            <td><span class="cat-dot" style="background:${CAT_COLORS[cat]}"></span>${CAT_LABELS[cat]}</td>
+            <td style="text-align:center;color:#e88a3a;font-weight:600">${pAcc}</td>
+            <td style="text-align:center;color:#e88a3a;font-weight:600">${formatNum(pAmt)}</td>
+            <td style="text-align:center;color:#34c77b;font-weight:600">${aAcc}</td>
+            <td style="text-align:center;color:#34c77b;font-weight:600">${formatNum(aAmt)}</td>
+            <td style="text-align:center"><span class="rt-pct ${cls}">${pct}%</span></td>
+        </tr>`;
+    });
+
+    const totalPct = tPAmt > 0 ? Math.round((tAAmt / tPAmt) * 100) : 0;
+    const tCls = totalPct >= 80 ? 'high' : totalPct >= 50 ? 'mid' : 'low';
+
+    html += `<tr class="total-row">
+        <td>Total</td>
+        <td style="text-align:center">${tPA}</td><td style="text-align:center">${formatNum(tPAmt)}</td>
+        <td style="text-align:center">${tAA}</td><td style="text-align:center">${formatNum(tAAmt)}</td>
+        <td style="text-align:center"><span class="rt-pct ${tCls}">${totalPct}%</span></td>
+    </tr>`;
+
+    html += `</tbody></table></div></div>`;
+    return html;
+}
+
+function onStaffChange(bank) {
+    const select = document.getElementById('staff-' + bank);
+    const infoEl = document.getElementById('staffInfo-' + bank);
+    if (!select || !infoEl) return;
+    const staffId = select.value;
+    const staff = (STAFF_DATA[bank] || []).find(s => s.id === staffId);
+    if (staff) {
+        selectedStaff[bank] = staff;
+        infoEl.innerHTML = `<span>Designation: <strong>${staff.designation}</strong></span><span>District: <strong>${staff.district}</strong></span><span>Branch: <strong>${staff.branch}</strong></span>`;
+    } else {
+        selectedStaff[bank] = null;
+        infoEl.innerHTML = '';
+    }
 }
 
 function getPhaseTag(phase) {
@@ -1204,6 +1413,10 @@ function savePlan(bank) {
     const d = loadAll();
     if (!d[bank]) d[bank] = {};
 
+    // Save staff selection
+    const staffSelect = document.getElementById('staff-' + bank);
+    if (staffSelect) d[bank]._staffId = staffSelect.value;
+
     const inputs = document.querySelectorAll(`[data-bank="${bank}"][data-type="plan"]`);
     inputs.forEach(inp => {
         const cat = inp.dataset.cat;
@@ -1239,6 +1452,9 @@ function savePlan(bank) {
 function saveAchievement(bank) {
     const d = loadAll();
     if (!d[bank]) d[bank] = {};
+
+    const staffSelect = document.getElementById('staff-' + bank);
+    if (staffSelect) d[bank]._staffId = staffSelect.value;
 
     const inputs = document.querySelectorAll(`[data-bank="${bank}"][data-type="ach"]`);
     inputs.forEach(inp => {
@@ -1993,29 +2209,32 @@ function loadDemoData() {
         sbi: {
             _planSaved: true,
             _achSaved: true,
-            'regular': { planAccount: 'Rajesh Kumar', planAmount: '125000', achAccount: 'Rajesh Kumar', achAmount: '118000' },
-            '1-30-dpd': { planAccount: 'Meena Devi', planAmount: '85000', achAccount: 'Meena Devi', achAmount: '72000' },
-            '31-60-dpd': { planAccount: 'Suresh Patel', planAmount: '64000', achAccount: 'Suresh Patel', achAmount: '45000' },
-            '61-90-dpd': { planAccount: 'Anita Sharma', planAmount: '52000', achAccount: 'Anita Sharma', achAmount: '28000' },
-            'npa': { planAccount: 'Vikram Singh', planAmount: '95000', achAccount: 'Vikram Singh', achAmount: '35000' }
+            _staffId: 'sbi-001',
+            'regular': { planAccount: '12', planAmount: '125000', achAccount: '10', achAmount: '118000' },
+            '1-30-dpd': { planAccount: '8', planAmount: '85000', achAccount: '6', achAmount: '72000' },
+            '31-60-dpd': { planAccount: '5', planAmount: '64000', achAccount: '3', achAmount: '45000' },
+            '61-90-dpd': { planAccount: '4', planAmount: '52000', achAccount: '2', achAmount: '28000' },
+            'npa': { planAccount: '3', planAmount: '95000', achAccount: '1', achAmount: '35000' }
         },
         csb: {
             _planSaved: true,
             _achSaved: true,
-            'regular': { planAccount: 'Priya Nair', planAmount: '98000', achAccount: 'Priya Nair', achAmount: '98000' },
-            '1-30-dpd': { planAccount: 'Arun Menon', planAmount: '67000', achAccount: 'Arun Menon', achAmount: '55000' },
-            '31-60-dpd': { planAccount: 'Lakshmi Iyer', planAmount: '43000', achAccount: 'Lakshmi Iyer', achAmount: '38000' },
-            '61-90-dpd': { planAccount: 'George Thomas', planAmount: '38000', achAccount: 'George Thomas', achAmount: '22000' },
-            'npa': { planAccount: 'Deepa Pillai', planAmount: '72000', achAccount: 'Deepa Pillai', achAmount: '50000' }
+            _staffId: 'csb-001',
+            'regular': { planAccount: '10', planAmount: '98000', achAccount: '10', achAmount: '98000' },
+            '1-30-dpd': { planAccount: '6', planAmount: '67000', achAccount: '5', achAmount: '55000' },
+            '31-60-dpd': { planAccount: '4', planAmount: '43000', achAccount: '3', achAmount: '38000' },
+            '61-90-dpd': { planAccount: '3', planAmount: '38000', achAccount: '2', achAmount: '22000' },
+            'npa': { planAccount: '2', planAmount: '72000', achAccount: '1', achAmount: '50000' }
         },
         own: {
             _planSaved: true,
             _achSaved: true,
-            'regular': { planAccount: 'Mohan Das', planAmount: '150000', achAccount: 'Mohan Das', achAmount: '142000' },
-            '1-30-dpd': { planAccount: 'Fatima Begum', planAmount: '78000', achAccount: 'Fatima Begum', achAmount: '65000' },
-            '31-60-dpd': { planAccount: 'Ramesh Yadav', planAmount: '55000', achAccount: 'Ramesh Yadav', achAmount: '40000' },
-            '61-90-dpd': { planAccount: 'Sunita Mishra', planAmount: '41000', achAccount: 'Sunita Mishra', achAmount: '30000' },
-            'npa': { planAccount: 'Kamal Joshi', planAmount: '88000', achAccount: 'Kamal Joshi', achAmount: '42000' }
+            _staffId: 'own-001',
+            'regular': { planAccount: '15', planAmount: '150000', achAccount: '14', achAmount: '142000' },
+            '1-30-dpd': { planAccount: '7', planAmount: '78000', achAccount: '5', achAmount: '65000' },
+            '31-60-dpd': { planAccount: '5', planAmount: '55000', achAccount: '3', achAmount: '40000' },
+            '61-90-dpd': { planAccount: '3', planAmount: '41000', achAccount: '2', achAmount: '30000' },
+            'npa': { planAccount: '2', planAmount: '88000', achAccount: '1', achAmount: '42000' }
         },
         _completedAt: new Date().toISOString()
     };
