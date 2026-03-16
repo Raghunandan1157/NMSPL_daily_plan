@@ -1766,34 +1766,55 @@ function buildEntryTabs() {
     const main = document.getElementById('entryMain');
     let html = '';
 
+    // Get staff info from login
+    const dm = DM_LIST.find(d => d.name === appUser);
+    const staffName = appRole === 'DM' ? appUser : 'CEO';
+    const staffDistrict = dm ? dm.district : 'All';
+
     BANKS.forEach((bank, bi) => {
         const phase = getPhase(bank);
         const d = loadAll();
         const bd = d[bank] || {};
-        const staffList = STAFF_DATA[bank] || [];
-        const savedStaffId = bd._staffId || '';
 
         html += `<div class="tab-content" id="etab-${bank}">`;
         html += `<div class="page-header">Daily Plan <span class="bank-tag">${BANK_LABELS[bank]}</span> ${getPhaseTag(phase)}</div>`;
 
-        // Staff Selector
-        html += `<div class="staff-selector">
-            <div class="ss-label">Field Staff</div>
-            <select class="staff-select" id="staff-${bank}" onchange="onStaffChange('${bank}')">
-                <option value="">-- Select Staff --</option>
-                ${staffList.map(s => `<option value="${s.id}" ${s.id === savedStaffId ? 'selected' : ''}>${s.name} - ${s.designation}</option>`).join('')}
-            </select>
-            <div class="staff-info" id="staffInfo-${bank}"></div>
+        // Staff info bar (from login, not selectable)
+        html += `<div class="staff-selector" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:16px 24px">
+            <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:40px;height:40px;border-radius:50%;background:#4a5fc1;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px">${staffName.charAt(0)}</div>
+                <div>
+                    <div style="font-size:15px;font-weight:700;color:#333">${staffName}</div>
+                    <div style="font-size:12px;color:#999">${appRole === 'DM' ? 'District Manager' : 'CEO'} &middot; ${staffDistrict}</div>
+                </div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+                <span style="padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;background:${phase === 'plan' ? '#fff3e0;color:#e88a3a' : phase === 'achievement' ? '#e8f9ef;color:#34c77b' : '#f0e8ff;color:#7c4dff'}">${phase === 'plan' ? 'Plan Pending' : phase === 'achievement' ? 'Achievement Pending' : 'Completed'}</span>
+            </div>
         </div>`;
 
-        // Plan Table
+        // Phase-based view
         if (phase === 'plan') {
+            // Show Set Plan card + entry table
+            html += `<div style="max-width:700px;margin-bottom:16px;padding:20px 24px;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(74,95,193,0.06);border-left:4px solid #e88a3a">
+                <div style="font-size:16px;font-weight:700;color:#333;margin-bottom:4px">Set Plan</div>
+                <div style="font-size:13px;color:#999">Enter the number of accounts and target amount for each category</div>
+            </div>`;
             html += buildEntryTable(bank, 'plan', bd, false);
         } else if (phase === 'achievement') {
+            // Show locked plan summary + achievement entry
+            html += `<div style="max-width:700px;margin-bottom:16px;padding:20px 24px;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(74,95,193,0.06);border-left:4px solid #34c77b">
+                <div style="font-size:16px;font-weight:700;color:#333;margin-bottom:4px">Set Achievement</div>
+                <div style="font-size:13px;color:#999">Plan is locked. Enter actual collection numbers below.</div>
+            </div>`;
             html += buildEntryTable(bank, 'plan', bd, true);
-            html += `<div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#34c77b;text-transform:uppercase;letter-spacing:0.5px;max-width:700px">Achievement</div>`;
             html += buildEntryTable(bank, 'ach', bd, false);
         } else {
+            // Both done - show analytics
+            html += `<div style="max-width:700px;margin-bottom:16px;padding:20px 24px;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(74,95,193,0.06);border-left:4px solid #7c4dff">
+                <div style="font-size:16px;font-weight:700;color:#333;margin-bottom:4px">Plan vs Achievement</div>
+                <div style="font-size:13px;color:#999">Both plan and achievement have been submitted for ${BANK_LABELS[bank]}</div>
+            </div>`;
             html += buildAnalyticsView(bank, bd);
         }
 
@@ -1822,9 +1843,6 @@ function buildEntryTabs() {
     </div>`;
 
     main.innerHTML = html;
-
-    // Trigger staff info display for pre-selected
-    BANKS.forEach(bank => onStaffChange(bank));
 }
 
 function buildEntryTable(bank, type, bd, disabled) {
@@ -1919,20 +1937,7 @@ function buildAnalyticsView(bank, bd) {
     return html;
 }
 
-function onStaffChange(bank) {
-    const select = document.getElementById('staff-' + bank);
-    const infoEl = document.getElementById('staffInfo-' + bank);
-    if (!select || !infoEl) return;
-    const staffId = select.value;
-    const staff = (STAFF_DATA[bank] || []).find(s => s.id === staffId);
-    if (staff) {
-        selectedStaff[bank] = staff;
-        infoEl.innerHTML = `<span>Designation: <strong>${staff.designation}</strong></span><span>District: <strong>${staff.district}</strong></span><span>Branch: <strong>${staff.branch}</strong></span>`;
-    } else {
-        selectedStaff[bank] = null;
-        infoEl.innerHTML = '';
-    }
-}
+// Staff info comes from login - no per-tab selection needed
 
 function getPhaseTag(phase) {
     if (phase === 'plan') return '<span class="mode-tag plan">Set Plan</span>';
@@ -1976,9 +1981,7 @@ function savePlan(bank) {
     const d = loadAll();
     if (!d[bank]) d[bank] = {};
 
-    // Save staff selection
-    const staffSelect = document.getElementById('staff-' + bank);
-    if (staffSelect) d[bank]._staffId = staffSelect.value;
+    d[bank]._staff = appUser;
 
     const inputs = document.querySelectorAll(`[data-bank="${bank}"][data-type="plan"]`);
     inputs.forEach(inp => {
@@ -2015,9 +2018,6 @@ function savePlan(bank) {
 function saveAchievement(bank) {
     const d = loadAll();
     if (!d[bank]) d[bank] = {};
-
-    const staffSelect = document.getElementById('staff-' + bank);
-    if (staffSelect) d[bank]._staffId = staffSelect.value;
 
     const inputs = document.querySelectorAll(`[data-bank="${bank}"][data-type="ach"]`);
     inputs.forEach(inp => {
