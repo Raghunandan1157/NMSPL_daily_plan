@@ -109,7 +109,73 @@
         .date-btn .db-date { font-size: 18px; font-weight: 800; color: #4a5fc1; }
         .do-hint { font-size: 13px; color: #bbb; }
 
+        /* ===== TOP HEADER BAR ===== */
+        .top-header {
+            height: 60px;
+            border-bottom: 1px solid #e8eaf0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 16px;
+            position: fixed;
+            top: 0; left: 250px; right: 0;
+            z-index: 50;
+        }
+        .th-hamburger {
+            display: none;
+            background: none; border: none;
+            cursor: pointer; padding: 6px;
+        }
+        .th-hamburger span {
+            display: block; width: 20px; height: 2px;
+            background: #333; margin: 4px 0; border-radius: 2px;
+        }
+        .th-breadcrumb {
+            font-size: 14px; color: #999; font-weight: 500;
+        }
+        .th-breadcrumb strong { color: #333; font-weight: 600; }
+        .th-spacer { flex: 1; }
+        .th-date-display {
+            display: flex; align-items: center; gap: 8px;
+            padding: 7px 14px; background: #f0f2f8;
+            border-radius: 8px; font-size: 13px;
+            color: #333; font-weight: 500; cursor: default;
+        }
+        .th-date-display .th-cal { color: #4a5fc1; }
+        .th-user {
+            display: flex; align-items: center; gap: 10px;
+            padding: 6px 12px 6px 16px;
+            border-left: 1px solid #e8eaf0;
+            cursor: default;
+        }
+        .th-avatar {
+            width: 34px; height: 34px;
+            background: #4a5fc1; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 700; font-size: 14px;
+        }
+        .th-user-info { display: flex; flex-direction: column; }
+        .th-user-name { font-size: 13px; font-weight: 600; color: #333; }
+        .th-user-role { font-size: 11px; color: #999; }
+        .th-signout {
+            background: none; border: none; cursor: pointer;
+            color: #999; font-size: 12px; padding: 6px 10px;
+            border-radius: 6px; transition: 0.2s;
+        }
+        .th-signout:hover { background: #ffeef0; color: #e74c5e; }
+
+        /* Adjust main for top header */
+        .has-topheader .main {
+            padding-top: 92px !important;
+        }
+
         @media (max-width: 768px) {
+            .top-header { left: 0; padding: 0 12px; gap: 8px; }
+            .th-hamburger { display: block; }
+            .th-user-info { display: none; }
+            .th-date-display span { display: none; }
+            .th-breadcrumb { display: none; }
             .login-box { padding: 36px 24px; }
             .do-time { font-size: 36px; }
             .date-btn { padding: 16px 20px; min-width: 100px; }
@@ -657,8 +723,7 @@
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
-            .mobile-header { display: flex; }
-            .main { margin-left: 0; padding: 72px 16px 20px; }
+            .main { margin-left: 0 !important; padding: 72px 16px 20px; }
             .card { padding: 20px; }
             .field-row { grid-template-columns: 1fr; gap: 12px; }
             .analytics-row { grid-template-columns: 1fr; gap: 8px; }
@@ -955,13 +1020,20 @@
 </div>
 
 <!-- ==================== DATA ENTRY APP ==================== -->
-<div class="app" id="entryApp">
-    <header class="mobile-header">
-        <button class="hamburger" onclick="toggleSidebar('entry')" aria-label="Menu">
-            <span></span><span></span><span></span>
-        </button>
-        <span class="mob-title">NMSPL</span>
-        <span id="mobDateEntry" style="font-size:13px;color:#999"></span>
+<div class="app has-topheader" id="entryApp">
+    <header class="top-header" id="topHeaderEntry">
+        <button class="th-hamburger" onclick="toggleSidebar('entry')"><span></span><span></span><span></span></button>
+        <div class="th-breadcrumb">Home / <strong>Data Entry</strong></div>
+        <div class="th-spacer"></div>
+        <div class="th-date-display"><span class="th-cal">&#128197;</span> <span id="thDateEntry"></span></div>
+        <div class="th-user">
+            <div class="th-avatar" id="thAvatarEntry">C</div>
+            <div class="th-user-info">
+                <span class="th-user-name" id="thNameEntry">CEO</span>
+                <span class="th-user-role" id="thRoleEntry">Headquarters</span>
+            </div>
+        </div>
+        <button class="th-signout" onclick="goHome()">Sign Out</button>
     </header>
     <div class="overlay" id="overlayEntry" onclick="closeSidebar('entry')"></div>
 
@@ -1001,13 +1073,20 @@
 </div>
 
 <!-- ==================== MONITOR APP ==================== -->
-<div class="app" id="monitorApp">
-    <header class="mobile-header">
-        <button class="hamburger" onclick="toggleSidebar('monitor')" aria-label="Menu">
-            <span></span><span></span><span></span>
-        </button>
-        <span class="mob-title">NMSPL</span>
-        <span style="font-size:13px;color:#999">Monitor</span>
+<div class="app has-topheader" id="monitorApp">
+    <header class="top-header" id="topHeaderMonitor">
+        <button class="th-hamburger" onclick="toggleSidebar('monitor')"><span></span><span></span><span></span></button>
+        <div class="th-breadcrumb">Home / <strong id="thBreadMonitor">Dashboard</strong></div>
+        <div class="th-spacer"></div>
+        <div class="th-date-display"><span class="th-cal">&#128197;</span> <span id="thDateMonitor"></span></div>
+        <div class="th-user">
+            <div class="th-avatar" id="thAvatarMonitor">C</div>
+            <div class="th-user-info">
+                <span class="th-user-name" id="thNameMonitor">CEO</span>
+                <span class="th-user-role" id="thRoleMonitor">Headquarters</span>
+            </div>
+        </div>
+        <button class="th-signout" onclick="goHome()">Sign Out</button>
     </header>
     <div class="overlay" id="overlayMonitor" onclick="closeSidebar('monitor')"></div>
 
@@ -1215,10 +1294,8 @@ function handleLogin(role) {
     if (role === 'CEO') {
         appRole = 'CEO';
         appUser = 'CEO';
-        // CEO goes straight to app with today's date
-        appDate = new Date().toISOString().split('T')[0];
         document.getElementById('loginScreen').classList.add('hidden');
-        enterApp('monitor');
+        showDateOverlay();
     } else {
         const sel = document.getElementById('dmSelect');
         if (!sel.value) { alert('Please select a manager.'); return; }
@@ -1258,7 +1335,7 @@ function selectDate(offset) {
     d.setDate(d.getDate() + offset);
     appDate = d.toISOString().split('T')[0];
     document.getElementById('dateOverlay').classList.remove('show');
-    enterApp('entry');
+    enterApp(appRole === 'CEO' ? 'monitor' : 'entry');
 }
 
 function enterApp(mode) {
@@ -1275,6 +1352,23 @@ function enterApp(mode) {
     const el2 = document.getElementById('monitorUserLabel');
     if (el1) el1.textContent = userLabel;
     if (el2) el2.textContent = userLabel;
+
+    // Update top header bars
+    const dateStr = new Date(appDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const userName = appRole === 'CEO' ? 'CEO' : appUser;
+    const userRoleText = appRole === 'CEO' ? 'Headquarters' : 'District Manager';
+    const avatar = userName.charAt(0).toUpperCase();
+
+    ['Entry', 'Monitor'].forEach(suffix => {
+        const d = document.getElementById('thDate' + suffix);
+        const n = document.getElementById('thName' + suffix);
+        const r = document.getElementById('thRole' + suffix);
+        const a = document.getElementById('thAvatar' + suffix);
+        if (d) d.textContent = dateStr;
+        if (n) n.textContent = userName;
+        if (r) r.textContent = userRoleText;
+        if (a) a.textContent = avatar;
+    });
 
     if (mode === 'entry') {
         document.getElementById('entryApp').classList.add('active');
@@ -1744,6 +1838,8 @@ function switchMonitorTab(tab) {
         li.classList.toggle('active', li.dataset.target === tab);
     });
     closeSidebar('monitor');
+    const bc = document.getElementById('thBreadMonitor');
+    if (bc) bc.textContent = tab === 'dashboard' ? 'Dashboard' : 'Reports';
     if (tab === 'dashboard') renderDashboard();
     if (tab === 'reports') renderReports();
 }
