@@ -137,12 +137,97 @@
         .th-breadcrumb strong { color: #333; font-weight: 600; }
         .th-spacer { flex: 1; }
         .th-date-display {
-            display: flex; align-items: center; gap: 8px;
-            padding: 7px 14px; background: #f0f2f8;
+            display: flex; align-items: center; gap: 6px;
+            padding: 0; background: none;
             border-radius: 8px; font-size: 13px;
             color: #333; font-weight: 500; cursor: default;
         }
         .th-date-display .th-cal { color: #4a5fc1; }
+        .th-date-nav {
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1.5px solid #dde0ea; border-radius: 8px;
+            background: #fff; color: #555; font-size: 16px; font-weight: 700;
+            cursor: pointer; transition: 0.2s; user-select: none;
+        }
+        .th-date-nav:hover { border-color: #4a5fc1; color: #4a5fc1; background: #f0f3ff; }
+        .th-date-trigger {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 14px; background: #f0f2f8;
+            border-radius: 8px; font-size: 13px;
+            color: #333; font-weight: 600; cursor: pointer;
+            transition: 0.2s; user-select: none;
+            border: 1.5px solid transparent;
+        }
+        .th-date-trigger:hover { border-color: #4a5fc1; background: #eef1ff; }
+        .th-date-trigger .th-cal { color: #4a5fc1; }
+        /* Date dropdown */
+        .date-dropdown {
+            position: fixed; top: 54px; right: 200px;
+            width: 300px; background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(74,95,193,0.18);
+            border: 1px solid #e8eaf0;
+            z-index: 999; display: none;
+            padding: 16px;
+        }
+        .date-dropdown.open { display: block; }
+        .cal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .cal-header .cal-title { font-size: 14px; font-weight: 700; color: #333; }
+        .cal-header button {
+            width: 28px; height: 28px; border: 1.5px solid #dde0ea;
+            border-radius: 6px; background: #fff; color: #555;
+            font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cal-header button:hover { border-color: #4a5fc1; color: #4a5fc1; }
+        .cal-weekdays {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 2px; margin-bottom: 4px;
+        }
+        .cal-weekdays span {
+            text-align: center; font-size: 11px; font-weight: 700;
+            color: #999; padding: 4px 0; text-transform: uppercase;
+        }
+        .cal-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .cal-day {
+            text-align: center; padding: 6px 0;
+            font-size: 13px; border-radius: 6px;
+            cursor: pointer; transition: 0.15s; color: #333;
+        }
+        .cal-day:hover { background: #eef1ff; color: #4a5fc1; }
+        .cal-day.today { background: #f0f3ff; font-weight: 700; color: #4a5fc1; border: 1.5px solid #4a5fc1; }
+        .cal-day.selected { background: #4a5fc1; color: #fff; font-weight: 700; }
+        .cal-day.other-month { color: #ccc; }
+        .cal-day.other-month:hover { background: #f8f9fc; color: #aaa; }
+        .dd-divider { height: 1px; background: #e8eaf0; margin: 12px 0; }
+        .dd-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+        .dd-preset-btn {
+            padding: 6px 14px; border: 1.5px solid #dde0ea;
+            border-radius: 8px; background: #fff; font-size: 12px;
+            font-weight: 600; color: #555; cursor: pointer; transition: 0.2s;
+        }
+        .dd-preset-btn:hover { border-color: #4a5fc1; color: #4a5fc1; background: #f0f3ff; }
+        .dd-range-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+        .dd-range-row label { font-size: 12px; font-weight: 600; color: #888; min-width: 36px; }
+        .dd-range-row input {
+            flex: 1; padding: 7px 10px; border: 1.5px solid #dde0ea;
+            border-radius: 8px; font-size: 12px; color: #333;
+            background: #fafbff; outline: none;
+        }
+        .dd-range-row input:focus { border-color: #4a5fc1; }
+        .dd-apply-btn {
+            width: 100%; padding: 9px; border: none;
+            border-radius: 8px; background: #4a5fc1; color: #fff;
+            font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .dd-apply-btn:hover { background: #3a4da8; }
         .th-user {
             display: flex; align-items: center; gap: 10px;
             padding: 6px 12px 6px 16px;
@@ -174,8 +259,11 @@
             .top-header { left: 0; padding: 0 12px; gap: 8px; }
             .th-hamburger { display: block; }
             .th-user-info { display: none; }
-            .th-date-display span { display: none; }
+            .th-date-display .th-date-nav { width: 28px; height: 28px; font-size: 14px; }
+            .th-date-trigger span.th-date-text { display: none; }
+            .th-date-trigger .th-cal { display: inline; }
             .th-breadcrumb { display: none; }
+            .date-dropdown { right: 10px; left: 10px; width: auto; }
             .login-box { padding: 36px 24px; }
             .do-time { font-size: 36px; }
             .date-btn { padding: 16px 20px; min-width: 100px; }
@@ -1025,7 +1113,14 @@
         <button class="th-hamburger" onclick="toggleSidebar('entry')"><span></span><span></span><span></span></button>
         <div class="th-breadcrumb">Home / <strong>Data Entry</strong></div>
         <div class="th-spacer"></div>
-        <div class="th-date-display"><span class="th-cal">&#128197;</span> <span id="thDateEntry"></span></div>
+        <div class="th-date-display">
+            <button class="th-date-nav" onclick="navigateDate(-1)" title="Previous day">&lsaquo;</button>
+            <div class="th-date-trigger" onclick="toggleDateDropdown()">
+                <span class="th-cal">&#128197;</span>
+                <span class="th-date-text" id="thDateEntry"></span>
+            </div>
+            <button class="th-date-nav" onclick="navigateDate(1)" title="Next day">&rsaquo;</button>
+        </div>
         <div class="th-user">
             <div class="th-avatar" id="thAvatarEntry">C</div>
             <div class="th-user-info">
@@ -1078,7 +1173,14 @@
         <button class="th-hamburger" onclick="toggleSidebar('monitor')"><span></span><span></span><span></span></button>
         <div class="th-breadcrumb">Home / <strong id="thBreadMonitor">Dashboard</strong></div>
         <div class="th-spacer"></div>
-        <div class="th-date-display"><span class="th-cal">&#128197;</span> <span id="thDateMonitor"></span></div>
+        <div class="th-date-display">
+            <button class="th-date-nav" onclick="navigateDate(-1)" title="Previous day">&lsaquo;</button>
+            <div class="th-date-trigger" onclick="toggleDateDropdown()">
+                <span class="th-cal">&#128197;</span>
+                <span class="th-date-text" id="thDateMonitor"></span>
+            </div>
+            <button class="th-date-nav" onclick="navigateDate(1)" title="Next day">&rsaquo;</button>
+        </div>
         <div class="th-user">
             <div class="th-avatar" id="thAvatarMonitor">C</div>
             <div class="th-user-info">
@@ -1242,6 +1344,35 @@
     </div>
 </div>
 
+<!-- ===== DATE DROPDOWN ===== -->
+<div class="date-dropdown" id="dateDropdown">
+    <div class="cal-header">
+        <button onclick="navigateCalMonth(-1)">&lsaquo;</button>
+        <span class="cal-title" id="calMonthTitle"></span>
+        <button onclick="navigateCalMonth(1)">&rsaquo;</button>
+    </div>
+    <div class="cal-weekdays">
+        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="dd-divider"></div>
+    <div class="dd-presets">
+        <button class="dd-preset-btn" onclick="selectDatePreset('today')">Today</button>
+        <button class="dd-preset-btn" onclick="selectDatePreset('month')">This Month</button>
+        <button class="dd-preset-btn" onclick="selectDatePreset('year')">This Year</button>
+    </div>
+    <div class="dd-divider"></div>
+    <div class="dd-range-row">
+        <label>From</label>
+        <input type="date" id="ddRangeFrom">
+    </div>
+    <div class="dd-range-row">
+        <label>To</label>
+        <input type="date" id="ddRangeTo">
+    </div>
+    <button class="dd-apply-btn" onclick="applyCustomDateRange()">Apply Range</button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1275,6 +1406,7 @@ let appRole = '';
 let appUser = '';
 let appDate = new Date().toISOString().split('T')[0];
 let clockInterval;
+let calViewDate = new Date(); // tracks which month the calendar shows
 
 // Populate DM dropdown on load
 (function populateDM() {
@@ -1354,17 +1486,15 @@ function enterApp(mode) {
     if (el2) el2.textContent = userLabel;
 
     // Update top header bars
-    const dateStr = new Date(appDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    updateAllDates();
     const userName = appRole === 'CEO' ? 'CEO' : appUser;
     const userRoleText = appRole === 'CEO' ? 'Headquarters' : 'District Manager';
     const avatar = userName.charAt(0).toUpperCase();
 
     ['Entry', 'Monitor'].forEach(suffix => {
-        const d = document.getElementById('thDate' + suffix);
         const n = document.getElementById('thName' + suffix);
         const r = document.getElementById('thRole' + suffix);
         const a = document.getElementById('thAvatar' + suffix);
-        if (d) d.textContent = dateStr;
         if (n) n.textContent = userName;
         if (r) r.textContent = userRoleText;
         if (a) a.textContent = avatar;
@@ -1423,6 +1553,166 @@ function closeSidebar(app) {
     document.getElementById(id).classList.remove('open');
     document.getElementById(oid).classList.remove('show');
 }
+
+// ── Date Navigation ──
+function updateAllDates() {
+    const dateStr = new Date(appDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    ['Entry', 'Monitor'].forEach(suffix => {
+        const d = document.getElementById('thDate' + suffix);
+        if (d) d.textContent = dateStr;
+    });
+    dashDateFrom = appDate;
+    const dashInput = document.getElementById('dashDateInput');
+    if (dashInput) dashInput.value = dashDateFrom;
+    setMobDate();
+}
+
+function refreshCurrentView() {
+    const entryActive = document.getElementById('entryApp').classList.contains('active');
+    if (entryActive) {
+        buildEntryTabs();
+        const activeTab = document.querySelector('#entryNav li.active');
+        const bank = activeTab ? activeTab.getAttribute('data-target') : 'sbi';
+        switchEntryTab(bank);
+        updateAllStatuses();
+    } else {
+        renderDashboard();
+    }
+}
+
+function navigateDate(offset) {
+    const d = new Date(appDate);
+    d.setDate(d.getDate() + offset);
+    appDate = d.toISOString().split('T')[0];
+    updateAllDates();
+    refreshCurrentView();
+    closeDateDropdown();
+}
+
+function toggleDateDropdown() {
+    const dd = document.getElementById('dateDropdown');
+    if (dd.classList.contains('open')) {
+        closeDateDropdown();
+    } else {
+        calViewDate = new Date(appDate);
+        renderCalendar();
+        document.getElementById('ddRangeFrom').value = appDate;
+        document.getElementById('ddRangeTo').value = appDate;
+        // Position dropdown near the clicked trigger
+        dd.classList.add('open');
+    }
+}
+
+function closeDateDropdown() {
+    document.getElementById('dateDropdown').classList.remove('open');
+}
+
+function renderCalendar() {
+    const year = calViewDate.getFullYear();
+    const month = calViewDate.getMonth();
+    const title = calViewDate.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+    document.getElementById('calMonthTitle').textContent = title;
+
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Previous month trailing days
+    for (let i = firstDay - 1; i >= 0; i--) {
+        const dayNum = daysInPrevMonth - i;
+        const d = new Date(year, month - 1, dayNum);
+        const ds = d.toISOString().split('T')[0];
+        const cell = document.createElement('div');
+        cell.className = 'cal-day other-month';
+        cell.textContent = dayNum;
+        cell.onclick = () => selectCalDate(ds);
+        grid.appendChild(cell);
+    }
+
+    // Current month days
+    for (let day = 1; day <= daysInMonth; day++) {
+        const d = new Date(year, month, day);
+        const ds = d.toISOString().split('T')[0];
+        const cell = document.createElement('div');
+        cell.className = 'cal-day';
+        if (ds === todayStr) cell.classList.add('today');
+        if (ds === appDate) cell.classList.add('selected');
+        cell.textContent = day;
+        cell.onclick = () => selectCalDate(ds);
+        grid.appendChild(cell);
+    }
+
+    // Next month leading days
+    const totalCells = firstDay + daysInMonth;
+    const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+    for (let i = 1; i <= remaining; i++) {
+        const d = new Date(year, month + 1, i);
+        const ds = d.toISOString().split('T')[0];
+        const cell = document.createElement('div');
+        cell.className = 'cal-day other-month';
+        cell.textContent = i;
+        cell.onclick = () => selectCalDate(ds);
+        grid.appendChild(cell);
+    }
+}
+
+function navigateCalMonth(offset) {
+    calViewDate.setMonth(calViewDate.getMonth() + offset);
+    renderCalendar();
+}
+
+function selectCalDate(dateStr) {
+    appDate = dateStr;
+    updateAllDates();
+    refreshCurrentView();
+    closeDateDropdown();
+}
+
+function selectDatePreset(preset) {
+    const today = new Date();
+    if (preset === 'today') {
+        appDate = today.toISOString().split('T')[0];
+    } else if (preset === 'month') {
+        appDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+    } else if (preset === 'year') {
+        appDate = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0];
+    }
+    updateAllDates();
+    refreshCurrentView();
+    closeDateDropdown();
+}
+
+function applyCustomDateRange() {
+    const from = document.getElementById('ddRangeFrom').value;
+    const to = document.getElementById('ddRangeTo').value;
+    if (!from) return;
+    appDate = from;
+    dashDateFrom = from;
+    updateAllDates();
+    refreshCurrentView();
+    closeDateDropdown();
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', function(e) {
+    const dd = document.getElementById('dateDropdown');
+    if (!dd || !dd.classList.contains('open')) return;
+    const isInsideDropdown = dd.contains(e.target);
+    const isTrigger = e.target.closest('.th-date-trigger');
+    const isNavBtn = e.target.closest('.th-date-nav');
+    if (!isInsideDropdown && !isTrigger && !isNavBtn) {
+        closeDateDropdown();
+    }
+});
+
+// Close dropdown on Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDateDropdown();
+});
 
 // ════════════════════════════════════════
 // DATA ENTRY
