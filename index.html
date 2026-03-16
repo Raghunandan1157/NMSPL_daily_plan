@@ -17,66 +17,103 @@
         .login-screen {
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            background: linear-gradient(135deg, #f0f2f8 0%, #e8ecf8 100%);
         }
         .login-screen.hidden { display: none; }
+        .login-box {
+            background: #fff;
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 40px rgba(74,95,193,0.12);
+            text-align: center;
+        }
         .login-logo {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 800;
             color: #4a5fc1;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             letter-spacing: 2px;
         }
         .login-sub {
             font-size: 14px;
             color: #999;
-            margin-bottom: 48px;
+            margin-bottom: 8px;
         }
-        .login-cards {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            justify-content: center;
+        .login-welcome {
+            font-size: 20px; font-weight: 700; color: #333;
+            margin-bottom: 4px;
         }
-        .login-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 40px 36px;
-            width: 220px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(74,95,193,0.1);
-            cursor: pointer;
-            transition: all 0.25s;
-            border: 2px solid transparent;
+        .login-hint { font-size: 13px; color: #999; margin-bottom: 28px; }
+        .login-divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 20px 0;
         }
-        .login-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(74,95,193,0.18);
-            border-color: #4a5fc1;
+        .login-divider .ld-line { height: 1px; background: #e8eaf0; flex: 1; }
+        .login-divider .ld-text { font-size: 11px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
+        .login-dm-select {
+            width: 100%; padding: 14px 16px;
+            border: 1.5px solid #dde0ea; border-radius: 12px;
+            font-size: 14px; color: #333; background: #fafbff;
+            outline: none; appearance: none; margin-bottom: 12px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
         }
-        .login-card .lc-icon {
-            width: 64px; height: 64px;
-            border-radius: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 16px;
+        .login-dm-select:focus { border-color: #4a5fc1; }
+        .login-btn {
+            width: 100%; padding: 14px; border: none;
+            border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: 0.2s; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .login-card .lc-icon.entry { background: #eef1ff; color: #4a5fc1; }
-        .login-card .lc-icon.monitor { background: #e8f9ef; color: #34c77b; }
-        .login-card .lc-title {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 6px;
+        .login-btn.ceo { background: #4a5fc1; color: #fff; }
+        .login-btn.ceo:hover { background: #3a4da8; }
+        .login-btn.dm { background: #fff; color: #4a5fc1; border: 1.5px solid #dde0ea; }
+        .login-btn.dm:hover { border-color: #4a5fc1; }
+        .login-demo-btn {
+            margin-top: 16px; font-size: 12px; color: #bbb;
+            background: none; border: none; cursor: pointer;
+            text-decoration: underline;
         }
-        .login-card .lc-desc {
-            font-size: 13px;
-            color: #999;
-            line-height: 1.4;
+        .login-demo-btn:hover { color: #4a5fc1; }
+
+        /* ===== DATE OVERLAY ===== */
+        .date-overlay {
+            position: fixed; inset: 0;
+            background: #fff; z-index: 200;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .date-overlay.show { display: flex; }
+        .do-time {
+            font-size: 48px; font-weight: 800; color: #333;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+        }
+        .do-date { font-size: 16px; color: #888; margin-bottom: 40px; }
+        .date-btn-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
+        .date-btn {
+            background: #fff; border: 2px solid #e8eaf0;
+            border-radius: 16px; padding: 20px 28px;
+            cursor: pointer; transition: 0.2s; text-align: center;
+            min-width: 120px;
+        }
+        .date-btn:hover { border-color: #4a5fc1; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(74,95,193,0.12); }
+        .date-btn .db-label { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 6px; }
+        .date-btn .db-date { font-size: 18px; font-weight: 800; color: #4a5fc1; }
+        .do-hint { font-size: 13px; color: #bbb; }
+
+        @media (max-width: 768px) {
+            .login-box { padding: 36px 24px; }
+            .do-time { font-size: 36px; }
+            .date-btn { padding: 16px 20px; min-width: 100px; }
+            .date-btn .db-date { font-size: 16px; }
         }
 
         /* ===== APP LAYOUT ===== */
@@ -867,23 +904,54 @@
 
 <!-- ==================== LOGIN SCREEN ==================== -->
 <div class="login-screen" id="loginScreen">
-    <div class="login-logo">NMSPL</div>
-    <div class="login-sub">Daily Collection Plan</div>
-    <div style="margin-bottom:32px">
-        <button class="btn btn-outline" onclick="loadDemoData()" style="font-size:13px;padding:8px 20px;border-radius:10px;border:1.5px solid #dde0ea;background:#fff;color:#666;cursor:pointer;font-weight:600">Load Demo Data</button>
-    </div>
-    <div class="login-cards">
-        <div class="login-card" onclick="enterApp('entry')">
-            <div class="lc-icon entry">&#9998;</div>
-            <div class="lc-title">Data Entry</div>
-            <div class="lc-desc">Enter daily plan &amp; achievement for each bank</div>
+    <div class="login-box">
+        <div class="login-logo">NMSPL</div>
+        <div class="login-sub">Daily Collection Plan</div>
+        <div class="login-welcome">Welcome Back</div>
+        <div class="login-hint">Select your role to access the portal</div>
+
+        <button class="login-btn ceo" onclick="handleLogin('CEO')">
+            <span style="font-size:20px">&#128100;</span>
+            Login as CEO (Headquarters)
+        </button>
+
+        <div class="login-divider">
+            <div class="ld-line"></div>
+            <div class="ld-text">or District Manager</div>
+            <div class="ld-line"></div>
         </div>
-        <div class="login-card" onclick="enterApp('monitor')">
-            <div class="lc-icon monitor">&#9776;</div>
-            <div class="lc-title">Monitor</div>
-            <div class="lc-desc">View reports, charts &amp; analytics</div>
+
+        <select class="login-dm-select" id="dmSelect">
+            <option value="" disabled selected>Select Manager Name...</option>
+        </select>
+
+        <button class="login-btn dm" onclick="handleLogin('DM')">
+            Login as District Manager
+        </button>
+
+        <button class="login-demo-btn" onclick="loadDemoData()">Load Demo Data</button>
+    </div>
+</div>
+
+<!-- ==================== DATE OVERLAY ==================== -->
+<div class="date-overlay" id="dateOverlay">
+    <div class="do-time" id="doTime">00:00:00</div>
+    <div class="do-date" id="doDate"></div>
+    <div class="date-btn-row">
+        <div class="date-btn" onclick="selectDate(0)">
+            <div class="db-label">Today</div>
+            <div class="db-date" id="dbDate0"></div>
+        </div>
+        <div class="date-btn" onclick="selectDate(1)">
+            <div class="db-label">Tomorrow</div>
+            <div class="db-date" id="dbDate1"></div>
+        </div>
+        <div class="date-btn" onclick="selectDate(2)">
+            <div class="db-label">Day After</div>
+            <div class="db-date" id="dbDate2"></div>
         </div>
     </div>
+    <div class="do-hint">Select date to proceed</div>
 </div>
 
 <!-- ==================== DATA ENTRY APP ==================== -->
@@ -904,7 +972,6 @@
                     <div class="sidebar-title">NMSPL</div>
                     <div class="sidebar-subtitle">Data Entry</div>
                 </div>
-                <button class="back-btn" onclick="goHome()">Home</button>
             </div>
             <div class="sidebar-section-label">Banks</div>
             <ul class="sidebar-nav" id="entryNav">
@@ -921,6 +988,12 @@
                     <span class="status-icon pending" id="estatus-own">&#9675;</span>
                 </li>
             </ul>
+            <div style="padding:16px 24px;border-top:1px solid #e8eaf0;margin-top:auto">
+                <div style="font-size:11px;color:#999;margin-bottom:6px">Logged in as</div>
+                <div style="font-size:13px;font-weight:700;color:#333;margin-bottom:12px" id="entryUserLabel"></div>
+                <button class="back-btn" onclick="enterApp('monitor')" style="width:100%;margin-bottom:8px;text-align:center">Dashboard</button>
+                <button class="back-btn" onclick="goHome()" style="width:100%;text-align:center;color:#e74c5e">Sign Out</button>
+            </div>
         </aside>
 
         <main class="main" id="entryMain"></main>
@@ -945,7 +1018,6 @@
                     <div class="sidebar-title">NMSPL</div>
                     <div class="sidebar-subtitle">Monitor</div>
                 </div>
-                <button class="back-btn" onclick="goHome()">Home</button>
             </div>
             <div class="sidebar-section-label">Views</div>
             <ul class="sidebar-nav" id="monitorNav">
@@ -956,6 +1028,12 @@
                     <span class="dot"></span>Reports
                 </li>
             </ul>
+            <div style="padding:16px 24px;border-top:1px solid #e8eaf0;margin-top:auto">
+                <div style="font-size:11px;color:#999;margin-bottom:6px">Logged in as</div>
+                <div style="font-size:13px;font-weight:700;color:#333;margin-bottom:12px" id="monitorUserLabel"></div>
+                <button class="back-btn" onclick="enterApp('entry')" style="width:100%;margin-bottom:8px;text-align:center">Data Entry</button>
+                <button class="back-btn" onclick="goHome()" style="width:100%;text-align:center;color:#e74c5e">Sign Out</button>
+            </div>
         </aside>
 
         <main class="main" id="monitorMain">
@@ -1096,7 +1174,7 @@ const DEADLINE_HOUR = 18;
 
 // ── Storage ──
 function storageKey() {
-    return 'nmspl_' + new Date().toISOString().split('T')[0];
+    return 'nmspl_' + (appDate || new Date().toISOString().split('T')[0]);
 }
 function loadAll() {
     return JSON.parse(localStorage.getItem(storageKey()) || '{}');
@@ -1105,9 +1183,99 @@ function saveAll(d) {
     localStorage.setItem(storageKey(), JSON.stringify(d));
 }
 
-// ── Navigation ──
+// ── DM Master Data (hardcoded) ──
+const DM_LIST = [
+    { name: 'Rajesh Kumar', district: 'Ernakulam' },
+    { name: 'Priya Nair', district: 'Thrissur' },
+    { name: 'Mohan Das', district: 'Palakkad' },
+    { name: 'Sunita Mishra', district: 'Kozhikode' },
+    { name: 'Arun Menon', district: 'Kottayam' }
+];
+
+let appRole = '';
+let appUser = '';
+let appDate = new Date().toISOString().split('T')[0];
+let clockInterval;
+
+// Populate DM dropdown on load
+(function populateDM() {
+    const sel = document.getElementById('dmSelect');
+    if (!sel) return;
+    DM_LIST.forEach(dm => {
+        const opt = document.createElement('option');
+        opt.value = dm.name;
+        opt.textContent = dm.name + ' - ' + dm.district;
+        sel.appendChild(opt);
+    });
+    const saved = localStorage.getItem('nmspl_last_dm');
+    if (saved) sel.value = saved;
+})();
+
+function handleLogin(role) {
+    if (role === 'CEO') {
+        appRole = 'CEO';
+        appUser = 'CEO';
+        // CEO goes straight to app with today's date
+        appDate = new Date().toISOString().split('T')[0];
+        document.getElementById('loginScreen').classList.add('hidden');
+        enterApp('monitor');
+    } else {
+        const sel = document.getElementById('dmSelect');
+        if (!sel.value) { alert('Please select a manager.'); return; }
+        appRole = 'DM';
+        appUser = sel.value;
+        localStorage.setItem('nmspl_last_dm', sel.value);
+        // DM gets date selection overlay
+        document.getElementById('loginScreen').classList.add('hidden');
+        showDateOverlay();
+    }
+}
+
+function showDateOverlay() {
+    const overlay = document.getElementById('dateOverlay');
+    overlay.classList.add('show');
+    const now = new Date();
+    const fmt = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    document.getElementById('dbDate0').textContent = fmt(now);
+    const tom = new Date(now); tom.setDate(tom.getDate() + 1);
+    document.getElementById('dbDate1').textContent = fmt(tom);
+    const dat = new Date(now); dat.setDate(dat.getDate() + 2);
+    document.getElementById('dbDate2').textContent = fmt(dat);
+
+    // Live clock
+    const update = () => {
+        const n = new Date();
+        document.getElementById('doTime').textContent = n.toLocaleTimeString('en-US', { hour12: false });
+        document.getElementById('doDate').textContent = n.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    };
+    update();
+    clockInterval = setInterval(update, 1000);
+}
+
+function selectDate(offset) {
+    clearInterval(clockInterval);
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    appDate = d.toISOString().split('T')[0];
+    document.getElementById('dateOverlay').classList.remove('show');
+    enterApp('entry');
+}
+
 function enterApp(mode) {
     document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dateOverlay').classList.remove('show');
+
+    // Update sidebar role display
+    const roleLabels = document.querySelectorAll('.sidebar-subtitle');
+    roleLabels.forEach(el => {
+        el.textContent = appRole === 'CEO' ? 'CEO - Headquarters' : 'DM - ' + appUser;
+    });
+    const userLabel = appRole === 'CEO' ? 'CEO (Headquarters)' : appUser;
+    const el1 = document.getElementById('entryUserLabel');
+    const el2 = document.getElementById('monitorUserLabel');
+    if (el1) el1.textContent = userLabel;
+    if (el2) el2.textContent = userLabel;
+
     if (mode === 'entry') {
         document.getElementById('entryApp').classList.add('active');
         document.getElementById('monitorApp').classList.remove('active');
@@ -1117,24 +1285,35 @@ function enterApp(mode) {
     } else {
         document.getElementById('monitorApp').classList.add('active');
         document.getElementById('entryApp').classList.remove('active');
-        renderDashboard();
-        renderReports();
-        switchMonitorTab('dashboard');
+
+        // CEO: show dashboard + reports, DM: show only data entry redirect
+        if (appRole === 'CEO') {
+            renderDashboard();
+            switchMonitorTab('dashboard');
+        } else {
+            renderDashboard();
+            switchMonitorTab('dashboard');
+        }
     }
     setMobDate();
 }
+
 function goHome() {
+    clearInterval(clockInterval);
     document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('entryApp').classList.remove('active');
     document.getElementById('monitorApp').classList.remove('active');
+    document.getElementById('dateOverlay').classList.remove('show');
+    appRole = '';
+    appUser = '';
     closeSidebar('entry');
     closeSidebar('monitor');
 }
+
 function setMobDate() {
-    const d = new Date();
+    const d = new Date(appDate);
     const s = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
-    const el = document.getElementById('mobDateEntry');
-    if (el) el.textContent = s;
+    document.querySelectorAll('.mob-date-display').forEach(el => el.textContent = s);
 }
 
 // ── Sidebar toggle ──
